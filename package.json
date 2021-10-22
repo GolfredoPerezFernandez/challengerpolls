@@ -94,6 +94,7 @@
         "react-native-windows": "^0.62.0",
         "react-stripe-checkout": "^2.6.3",
         "react-stripe-elements": "^6.1.2",
+        "react-switch": "^6.0.0",
         "react-transition-group": "^4.4.2",
         "react-video-player-extended": "^7.0.1",
         "reactxp": "^2.0.0",

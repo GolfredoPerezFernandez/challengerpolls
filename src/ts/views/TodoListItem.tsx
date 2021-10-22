@@ -29,6 +29,7 @@ const _itemBorderWidth = 1;
 const _styles = {
     container: RX.Styles.createButtonStyle({
         alignSelf: 'stretch',
+        flex: 1,
         borderBottomWidth: _itemBorderWidth,
         borderColor: 'black',
         flexDirection: 'row',
@@ -42,21 +43,30 @@ const _styles = {
         fontSize: FontSizes.size16,
         font: Fonts.displayRegular,
         color: '#00FF0A',
-        margin: 8,
     }),
     todoNameText: RX.Styles.createTextStyle({
         flex: -1,
-        fontSize: FontSizes.size16,
+        fontSize: FontSizes.size20,
         font: Fonts.displayRegular,
         color: Colors.menuText2,
-        margin: 8,
     }),
     todoNameText2: RX.Styles.createTextStyle({
         flex: -1,
-        fontSize: FontSizes.size16,
+        fontSize: FontSizes.size20,
         font: Fonts.displayRegular,
         color: Colors.menuTextSelected,
-        margin: 8,
+    }),
+    todoNameText4: RX.Styles.createTextStyle({
+        flex: -1,
+        fontSize: FontSizes.size14,
+        font: Fonts.displayRegular,
+        color: Colors.menuTextSelected,
+    }),
+    todoNameText5: RX.Styles.createTextStyle({
+        flex: -1,
+        fontSize: FontSizes.size14,
+        font: Fonts.displayRegular,
+        color: Colors.menuText2,
     }),
     todoNameTextSelected: RX.Styles.createTextStyle({
         font: Fonts.displaySemibold,
@@ -73,6 +83,20 @@ const _styles = {
     }),
     selected: RX.Styles.createButtonStyle({
         backgroundColor: Colors.listItemSelected,
+    }),
+    todoTextPoll1: RX.Styles.createTextStyle({
+        margin: 2,
+        fontSize: FontSizes.size16,
+        textAlign: 'center',
+        color: '#00FF0A',
+        backgroundColor: 'transparent',
+    }),
+    todoTextPoll2: RX.Styles.createTextStyle({
+        margin: 2,
+        fontSize: FontSizes.size16,
+        textAlign: 'center',
+        color: '#FF0000',
+        backgroundColor: 'transparent',
     }),
 };
 
@@ -141,29 +165,26 @@ export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoL
             );
         }
         votes = (
-            <RX.Text style={this.props.isSelected ? _styles.todoNameText2 : _styles.todoNameText} numberOfLines={1}>
+            <RX.Text style={this.props.isSelected ? _styles.todoNameText4 : _styles.todoNameText5} numberOfLines={1}>
                 {this.props.todo.totalVotes}
             </RX.Text>
         );
         id = (
-            <RX.Text style={this.props.isSelected ? _styles.todoNameText2 : _styles.todoNameText} numberOfLines={1}>
+            <RX.Text style={this.props.isSelected ? _styles.todoNameText4 : _styles.todoNameText5} numberOfLines={1}>
                 {this.props.todo.id}
             </RX.Text>
         );
         openPoll = (
-            <RX.Text style={this.props.isSelected ? _styles.todoNameText2 : _styles.todoNameText3} numberOfLines={1}>
-                {this.props.todo.openPoll.toString()}
+            <RX.Text style={this.props.todo.openPoll === true ? _styles.todoTextPoll1 : _styles.todoTextPoll2} numberOfLines={1}>
+                {this.props.todo.openPoll === true ? 'Open Poll' : 'Closed'}
             </RX.Text>
         );
         return (
             <RX.View style={buttonStyles}>
-                <RX.View>
+                <RX.View style={{ justifyContent: 'center', alignItems: 'center' }}>
                     {nameText}
-                    {votes}
-                </RX.View>
-                <RX.View>
+
                     {openPoll}
-                    {id}
                 </RX.View>
             </RX.View>
         );

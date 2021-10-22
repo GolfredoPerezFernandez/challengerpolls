@@ -27,28 +27,71 @@ const _styles = {
         alignItems: 'center',
         alignSelf: 'stretch',
     }),
+    container2: RX.Styles.createViewStyle({
+        flex: 1,
+        width: 300,
+        height: 500,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'stretch',
+    }),
+    todoTitle: RX.Styles.createTextStyle({
+        margin: 2,
+        fontSize: FontSizes.size32,
+        alignSelf: 'stretch',
+        color: Colors.white,
+        backgroundColor: 'transparent',
+    }),
+    todoHeader: RX.Styles.createTextStyle({
+        margin: 2,
+        fontSize: FontSizes.size20,
+        alignSelf: 'stretch',
+        color: Colors.white,
+        backgroundColor: 'transparent',
+    }),
+    todoTextPoll1: RX.Styles.createTextStyle({
+        margin: 2,
+        fontSize: FontSizes.size16,
+        alignSelf: 'stretch',
+        color: '#00FF0A',
+        backgroundColor: 'transparent',
+    }),
+    todoTextPoll2: RX.Styles.createTextStyle({
+        margin: 2,
+        fontSize: FontSizes.size16,
+        alignSelf: 'stretch',
+        color: '#FF0000',
+        backgroundColor: 'transparent',
+    }),
     todoText: RX.Styles.createTextStyle({
-        margin: 8,
+        margin: 2,
         fontSize: FontSizes.size16,
         alignSelf: 'stretch',
         color: Colors.white,
         backgroundColor: 'transparent',
     }),
     buttonContainer: RX.Styles.createViewStyle({
-        margin: 8,
-        alignSelf: 'stretch',
+        margin: 2,
+        height: 150,
+        width: 400,
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'flex-start',
         alignItems: 'center',
     }),
     buttonContainer2: RX.Styles.createViewStyle({
-        margin: 8,
-        alignSelf: 'stretch',
+        margin: 2,
+        width: 400,
+        height: 450,
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'center',
     }),
     label: RX.Styles.createTextStyle({
+        font: Fonts.displayBold,
+        fontSize: FontSizes.size12,
+        color: Colors.menuText,
+    }),
+    label2: RX.Styles.createTextStyle({
         font: Fonts.displayBold,
         fontSize: FontSizes.size12,
         color: Colors.menuText2,
@@ -71,44 +114,49 @@ export default class ViewTodoPanel extends ComponentBase<ViewTodoPanelProps, Vie
         return (
             <RX.View style={_styles.container}>
 
-                <UI.Paper elevation={10} style={{ root: { flexDirection: 'row', borderRadius: 12, backgroundColor: '#323238', width: 700, height: 400, } }} >
+                <UI.Paper elevation={10} style={{ root: { flexDirection: 'row', borderRadius: 12, backgroundColor: '#323238', width: 700, height: 500, } }} >
 
                     <RX.View style={_styles.buttonContainer2}>
 
-                        <RX.Text style={_styles.todoText}>
+                        <RX.Text style={_styles.todoTitle}>
                             {this.state.todo ? this.state.todo.title : ''}
                         </RX.Text>
-                        <RX.Text style={_styles.todoText}>
-                            {this.state.todo ? this.state.todo.openPoll.toString() : ''}
+                        <RX.Text style={this.state.todo.openPoll === true ? _styles.todoTextPoll1 : _styles.todoTextPoll2}>
+                            {this.state.todo ? this.state.todo.openPoll === true ? 'OpenPoll' : 'Closed' : ''}
+                        </RX.Text>
+
+                        <RX.Text style={_styles.todoHeader}>
+                            {'Description:'}
                         </RX.Text>
                         <RX.Text style={_styles.todoText}>
                             {this.state.todo ? this.state.todo.description : ''}
                         </RX.Text>
+                        <RX.Text style={_styles.todoText}>
+                            {this.state.todo ? 'Time Left: ' + this.state.todo.closeTime + 'min' : ''}
+                        </RX.Text>
+                        <RX.Text style={_styles.todoText}>
+                            {this.state.todo ? 'Total Votes: ' + this.state.todo.totalVotes : ''}
+                        </RX.Text>
 
+                        <RX.Text style={_styles.todoHeader}>
+                            {this.state.todo ? 'Vote For ' : ''}
+                        </RX.Text>
                         <RX.View style={_styles.buttonContainer}>
-                            <RX.Text style={_styles.todoText}>
-                                {this.state.todo ? 'Total Votes: ' + this.state.todo.totalVotes : ''}
-                            </RX.Text>
-                            <RX.Text style={_styles.todoText}>
-                                {this.state.todo ? 'Winning: ' + this.state.todo.winning : ''}
-                            </RX.Text>
-                            <RX.Text style={_styles.todoText}>
-                                {this.state.todo ? 'Time Left: ' + this.state.todo.closeTime : ''}
-                            </RX.Text>
 
+                            <RX.View style={_styles.buttonContainer}>
+                                <UI.Button iconSlot={iconStyle => (
+                                    <RX.Image source={ImageSource.hand} style={{ marginTop: 0, alignSelf: 'center', marginRight: 5, width: 47, height: 47 }} />
+                                )} style={{ content: [{ height: 80, backgroundColor: 'white', width: 200, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
+                                } elevation={4} variant={"outlined"} label="+1 Vote" />
+
+                                <UI.Button style={{ content: [{ backgroundColor: 'red', height: 57, width: 100, marginBottom: 5, borderRadius: 11, }], label: _styles.label2 }
+                                } elevation={4} variant={"outlined"} label="Close Votation" />
+
+                            </RX.View>
                         </RX.View>
 
-                        <RX.View style={_styles.buttonContainer}>
-                            <UI.Button iconSlot={iconStyle => (
-                                <RX.Image source={ImageSource.hand} style={{ marginTop: 0, alignSelf: 'center', marginRight: 5, width: 47, height: 47 }} />
-                            )} style={{ content: [{ height: 80, width: 200, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
-                            } elevation={4} variant={"outlined"} label="+1 Vote" />
-                            <UI.Button style={{ content: [{ height: 57, width: 100, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
-                            } elevation={4} variant={"outlined"} label="Close Votation" />
-
-                        </RX.View>
                     </RX.View>
-                    <RX.View style={_styles.container}>
+                    <RX.View style={_styles.container2}>
                         <TodoListPanel2 optionId={this.props.todoId} />
                     </RX.View>
                 </UI.Paper>

@@ -30,7 +30,7 @@ const _styles = {
     container: RX.Styles.createButtonStyle({
         alignSelf: 'stretch',
         borderBottomWidth: _itemBorderWidth,
-        borderColor: 'black',
+        borderColor: 'white',
         flexDirection: 'row',
         borderRadius: 12,
         backgroundColor: '#323238',

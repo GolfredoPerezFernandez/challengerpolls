@@ -88,7 +88,71 @@ class TodosStore extends StoreBase {
         votes: 20,
         votesPercent: '30%',
         _searchTerms: '3'
-    },];
+    }, {
+        id: "12",
+        creationTime: 1,
+        title: 'option 3',
+        url: 'link',
+        votes: 20,
+        votesPercent: '30%',
+        _searchTerms: '3'
+    }, {
+        id: "12",
+        creationTime: 1,
+        title: 'option 4',
+        url: 'link',
+        votes: 20,
+        votesPercent: '30%',
+        _searchTerms: '3'
+    }, {
+        id: "12",
+        creationTime: 1,
+        title: 'option 5',
+        url: 'link',
+        votes: 20,
+        votesPercent: '30%',
+        _searchTerms: '3'
+    }, {
+        id: "12",
+        creationTime: 1,
+        title: 'option 6',
+        url: 'link',
+        votes: 20,
+        votesPercent: '30%',
+        _searchTerms: '3'
+    }, {
+        id: "12",
+        creationTime: 1,
+        title: 'option 7',
+        url: 'link',
+        votes: 20,
+        votesPercent: '30%',
+        _searchTerms: '3'
+    }, {
+        id: "12",
+        creationTime: 1,
+        title: 'option 8',
+        url: 'link',
+        votes: 20,
+        votesPercent: '30%',
+        _searchTerms: '3'
+    }, {
+        id: "12",
+        creationTime: 1,
+        title: 'option 9',
+        url: 'link',
+        votes: 20,
+        votesPercent: '30%',
+        _searchTerms: '3'
+    }, {
+        id: "12",
+        creationTime: 1,
+        title: 'option 10',
+        url: 'link',
+        votes: 20,
+        votesPercent: '30%',
+        _searchTerms: '3'
+    }];
 
     addTodo(title: string, description: string, closeTime: number, duration: number, winning: string, openPoll: boolean, winner: string, totalVotes: number, options: Options) {
         const now = Date.now().valueOf();

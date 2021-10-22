@@ -79,7 +79,7 @@ const _styles = {
     label: RX.Styles.createTextStyle({
         font: Fonts.displayBold,
         fontSize: FontSizes.size12,
-        color: Colors.menuText2,
+        color: Colors.menuText,
     })
 };
 
@@ -123,7 +123,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
                         autoCapitalize={'none'}
                     />
                     <UI.Button
-                        onPress={this._onPressCreateNewTodo} style={{ root: [{ marginLeft: 10 }], content: [{ width: 70, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
+                        onPress={this._onPressCreateNewTodo} style={{ root: [{ marginLeft: 10 }], content: [{ width: 100, backgroundColor: 'white', marginBottom: 5, borderRadius: 11, }], label: _styles.label }
                         } elevation={4} variant={"outlined"} label="+ Create" />
 
 

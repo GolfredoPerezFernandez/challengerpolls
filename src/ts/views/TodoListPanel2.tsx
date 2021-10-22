@@ -10,8 +10,6 @@ import * as RX from 'reactxp';
 import { VirtualListView, VirtualListViewItemInfo } from 'reactxp-virtuallistview';
 import { VirtualListCellRenderDetails } from 'reactxp-virtuallistview/dist/VirtualListCell';
 import { ComponentBase } from 'resub';
-
-import AppConfig from '../app/AppConfig';
 import { Colors, Fonts, FontSizes } from '../app/Styles';
 
 import { Options } from '../models/TodoModels';
@@ -33,7 +31,7 @@ interface TodoListPanelState {
     searchString: string;
 }
 
-const _listItemHeight = 108;
+const _listItemHeight = 57;
 
 const _styles = {
     listScroll: RX.Styles.createViewStyle({
@@ -110,17 +108,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
     render() {
         return (
             <RX.View useSafeInsets={true} style={_styles.container}>
-                <RX.View style={_styles.todoListHeader}>
-                    <RX.TextInput
-                        style={_styles.searchBox}
-                        value={this.state.searchString}
-                        autoFocus={!AppConfig.isTouchInterface()}
-                        placeholder={'Search by ID'}
-                        onChangeText={this._onChangeTextSearch}
-                        autoCapitalize={'none'}
-                    />
 
-                </RX.View>
 
                 <VirtualListView
                     itemList={this.state.filteredTodoList}
@@ -132,13 +120,6 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
     }
 
 
-    private _onChangeTextSearch = (newValue: string) => {
-        const filteredTodoList = this._filterTodoList(this.state.todos, newValue.trim());
-        this.setState({
-            filteredTodoList,
-            searchString: newValue,
-        });
-    };
 
     private _filterTodoList(sortedTodos: TodoListItemInfo[], searchString: string): TodoListItemInfo[] {
         const lowerSearchString = searchString.toLowerCase();
