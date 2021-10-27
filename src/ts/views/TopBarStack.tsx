@@ -51,6 +51,7 @@ const _styles = {
 
 export interface TopBarStackProps extends RX.CommonProps {
     title: string;
+    isTiny: boolean;
     showBackButton: boolean;
     onBack?: () => void;
 }
@@ -62,22 +63,22 @@ export default class TopBarStack extends ComponentBase<TopBarStackProps, RX.Stat
 
         if (this.props.showBackButton) {
             leftContents = (
-                <HoverButton onPress={ this._onPressBack } onRenderChild={ this._renderBackButton }/>
+                <HoverButton onPress={this._onPressBack} onRenderChild={this._renderBackButton} />
             );
         }
 
         return (
-            <RX.View style={ [_styles.background, Styles.statusBarTopMargin] }>
-                <RX.View style={ _styles.leftRightContainer }>
-                    { leftContents }
+            <RX.View style={[_styles.background, Styles.statusBarTopMargin]}>
+                <RX.View style={_styles.leftRightContainer}>
+                    {leftContents}
                 </RX.View>
-                <RX.View style={ _styles.titleContainer }>
-                    <RX.Text style={ _styles.titleText } numberOfLines={ 1 }>
-                        { this.props.title }
+                <RX.View style={_styles.titleContainer}>
+                    <RX.Text style={_styles.titleText} numberOfLines={1}>
+                        {this.props.title}
                     </RX.Text>
                 </RX.View>
-                <RX.View style={ _styles.leftRightContainer }>
-                    { rightContents }
+                <RX.View style={_styles.leftRightContainer}>
+                    {rightContents}
                 </RX.View>
             </RX.View>
         );
@@ -92,8 +93,8 @@ export default class TopBarStack extends ComponentBase<TopBarStackProps, RX.Stat
     };
 
     private _renderBackButton = (isHovering: boolean) => (
-        <RX.Text style={ [_styles.backText, isHovering ? _styles.backTextHover : undefined] }>
-            { 'Back' }
+        <RX.Text style={[_styles.backText, isHovering ? _styles.backTextHover : undefined]}>
+            {'Back'}
         </RX.Text>
     );
 }

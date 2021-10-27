@@ -7,6 +7,7 @@
 */
 
 import AppConfig from '../app/AppConfig';
+import TodosStore from '../stores/TodosStore';
 
 
 import PageUrlService from './PageUrlService';
@@ -14,6 +15,7 @@ import ServiceManager from './ServiceManager';
 
 export default class ServiceRegistrar {
     static init() {
+        ServiceManager.registerService(TodosStore, 'TodosStore');
 
         // Web-specific services
         if (AppConfig.getPlatformType() === 'web') {

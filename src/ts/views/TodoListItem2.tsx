@@ -10,12 +10,13 @@ import { ComponentBase } from 'resub';
 
 import HoverButton from '../controls/HoverButton';
 import { Colors, Fonts, FontSizes } from '../app/Styles';
-import { Options } from '../models/TodoModels';
-
+import { Option } from '../models/TodoModels';
+import TodosStore from '../stores/TodosStore';
 interface TodoListItemProps extends RX.CommonProps {
     height: number;
-    todo: Options;
+    todo: Option;
     isSelected: boolean;
+    isTiny: boolean;
     searchString?: string;
     onPress: (todoId: string) => void;
 }
@@ -31,7 +32,7 @@ const _styles = {
         alignSelf: 'stretch',
         borderBottomWidth: _itemBorderWidth,
         borderColor: 'white',
-        flexDirection: 'row',
+        flexDirection: 'column',
         borderRadius: 12,
         backgroundColor: '#323238',
         alignItems: 'center',
@@ -94,10 +95,11 @@ export default class TodoListItem2 extends ComponentBase<TodoListItemProps, Todo
         );
     }
 
-    private _onPress = (e: RX.Types.SyntheticEvent) => {
+    private _onPress = async (e: RX.Types.SyntheticEvent) => {
         // Prevent VirtualListView.onItemSelected from
         // being triggering in the web app.
         e.stopPropagation();
+        await TodosStore.resetOption()
         this.props.onPress(this.props.todo.id);
     };
 
@@ -109,6 +111,7 @@ export default class TodoListItem2 extends ComponentBase<TodoListItemProps, Todo
             buttonStyles.push(_styles.hovering);
         }
         let nameText: JSX.Element;
+        let votes: JSX.Element;
         const searchString = this.props.searchString ? this.props.searchString.trim().toLowerCase() : '';
         let searchSubstrIndex = -1;
         if (searchString) {
@@ -136,10 +139,15 @@ export default class TodoListItem2 extends ComponentBase<TodoListItemProps, Todo
                 </RX.Text>
             );
         }
+        votes = (
+            <RX.Text style={[this.props.isSelected ? _styles.todoNameText2 : _styles.todoNameText,]} numberOfLines={1}>
+                {'votes:  ' + this.props.todo.votes}
+            </RX.Text>
+        );
         return (
             <RX.View style={buttonStyles}>
                 {nameText}
-
+                {votes}
             </RX.View>
         );
     };

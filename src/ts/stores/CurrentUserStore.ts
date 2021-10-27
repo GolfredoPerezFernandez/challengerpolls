@@ -13,15 +13,90 @@ import { User } from '../models/IdentityModels';
 export class CurrentUserStore extends StoreBase {
     // TODO - properly initialize
     private _user: User = {
-        id: '1',
-        fullName: 'Adam Smith',
-        email: 'adam.smith@sample.com',
+        id: '',
+        address:'',
+        transactionEth:0,
+        transactionBSC:0,
+        transactionMatic:0,
+        fullName: '',
     };
     private _isLogin: boolean = false
 
+    private activeId: string = 'all'
+    @autoSubscribe
+    getActive() {
+
+        return this.activeId
+    }
+
+    setActive(password: string) {
+        this.activeId = password
+        this.trigger()
+    }
+    private _error: boolean = false
     @autoSubscribe
     getLogin(): boolean {
         return this._isLogin;
+    }
+    setLogin(logIn: boolean) {
+        this._isLogin=logIn
+        this.trigger();
+    }
+    setUser(id:string,fullName:string,address:string,transactionEth?:number,transactionBSC?:number,transactionMatic?:number) {
+        this._user={            
+        id,
+        address,
+        transactionEth,
+        transactionBSC,
+        transactionMatic,
+        fullName
+        }
+        this.trigger();
+    }
+    private _cargando=false
+    setCargando(count:boolean) {
+        this._cargando=count
+        this.trigger();
+    }
+    private _getMaticTransaction=0
+    @autoSubscribe
+    getCargando(): boolean {
+        return this._cargando;
+    }
+    setError(logIn:boolean) {
+        this._error=logIn
+        this.trigger();
+    }
+    
+    setMaticTransaction(count:number) {
+        this._getMaticTransaction=count
+        this.trigger();
+    }
+    @autoSubscribe
+    getMaticTransaction(): number {
+        return this._getMaticTransaction;
+    }
+    setBscTransaction(count:number) {
+        this._getBscTransaction=count
+        this.trigger();
+    }
+    private _getBscTransaction=0
+    @autoSubscribe
+    getBscTransaction(): number {
+        return this._getBscTransaction;
+    }
+    setEThTransaction(count:number) {
+        this._getEThTransaction=count
+        this.trigger();
+    }
+    private _getEThTransaction=0
+    @autoSubscribe
+    getEThTransaction(): number {
+        return this._getEThTransaction;
+    }
+    @autoSubscribe
+    getError(): boolean {
+        return this._error;
     }
     @autoSubscribe
     getUser(): User | undefined {

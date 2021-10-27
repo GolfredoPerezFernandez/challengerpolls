@@ -14,7 +14,10 @@ import * as NavModels from '../models/NavModels';
 
 import AppConfig from './AppConfig';
 
+
 export default class DeepLinkConverter {
+    
+
     static getUrlFromContext(context: NavModels.RootNavContext): string {
         let url = AppConfig.getFrontendBaseUrl();
 
@@ -23,13 +26,13 @@ export default class DeepLinkConverter {
             const topViewContext = stackContext.stack[stackContext.stack.length - 1];
 
             if (topViewContext instanceof NavModels.TodoListViewNavContext) {
-                url += '/todos';
+                url += '/polls';
                 return url;
             } else if (topViewContext instanceof NavModels.ViewTodoViewNavContext) {
-                url += '/todos?selected=' + encodeURIComponent(topViewContext.todoId);
+                url += '/polls?selected=' + encodeURIComponent(topViewContext.todoId);
                 return url;
             } else if (topViewContext instanceof NavModels.NewTodoViewNavContext) {
-                url += '/todos?selected=new';
+                url += '/polls?selected=new';
                 return url;
             }else if (topViewContext instanceof NavModels.HomeViewNavContext) {
                 url += '/';
@@ -38,7 +41,7 @@ export default class DeepLinkConverter {
         } else {
             const compositeContext = context as NavModels.CompositeRootNavContext;
             if (compositeContext instanceof NavModels.TodoRootNavContext) {
-                url += '/todos';
+                url += '/polls';
                 const todoListContext = context as NavModels.TodoRootNavContext;
                 if (todoListContext.showNewTodoPanel) {
                     url += '?selected=new';
@@ -56,20 +59,20 @@ export default class DeepLinkConverter {
 
         return '';
     }
-
-    static getContextFromUrl(url: string, isStackNav: boolean): NavModels.RootNavContext | undefined {
+    
+    static  getContextFromUrl(url: string, isStackNav: boolean):NavModels.RootNavContext|undefined {
         const urlObj = new URL(url);
         if (!urlObj) {
-            return undefined;
+            return NavActions.createTodoListContext(isStackNav, undefined, false,true);;
         }
 
         const pathElements = _.map(_.split(urlObj.pathname, '/'), elem => decodeURIComponent(elem));
         if (pathElements.length < 2) {
-            return undefined;
+            return NavActions.createTodoListContext(isStackNav, undefined, false,true);;
         }
 
         switch (pathElements[1]) {
-            case 'todos':
+            case 'polls':
                 let selectedTodoId: string | undefined;
                 let showNewPanel = false;
 
@@ -86,7 +89,7 @@ export default class DeepLinkConverter {
                     return NavActions.createTodoListContext(isStackNav, undefined, false,true);
     
             default:
-                return undefined;
+                return NavActions.createTodoListContext(isStackNav, undefined, false,true);;
         }
     }
 }

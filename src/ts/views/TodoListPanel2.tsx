@@ -12,17 +12,19 @@ import { VirtualListCellRenderDetails } from 'reactxp-virtuallistview/dist/Virtu
 import { ComponentBase } from 'resub';
 import { Colors, Fonts, FontSizes } from '../app/Styles';
 
-import { Options } from '../models/TodoModels';
+import { Option } from '../models/TodoModels';
 import TodosStore from '../stores/TodosStore';
-;
+
 
 import TodoListItem2 from './TodoListItem2';
 interface TodoListItemInfo extends VirtualListViewItemInfo {
-    todo: Options;
+    todo: Option;
 }
 
 export interface TodoListPanelProps extends RX.CommonProps {
-    optionId?: string,
+    voted: boolean;
+    isTiny: boolean;
+    options: Option[]
 }
 
 interface TodoListPanelState {
@@ -31,7 +33,7 @@ interface TodoListPanelState {
     searchString: string;
 }
 
-const _listItemHeight = 57;
+const _listItemHeight = 88;
 
 const _styles = {
     listScroll: RX.Styles.createViewStyle({
@@ -81,15 +83,25 @@ const _styles = {
 export default class TodoListPanel extends ComponentBase<TodoListPanelProps, TodoListPanelState> {
     protected _buildState(props: TodoListPanelProps, initState: boolean): Partial<TodoListPanelState> | undefined {
         const partialState: Partial<TodoListPanelState> = {
+
         };
+        if (this.props.options !== undefined) {
 
-        partialState.todos = TodosStore.getOptions().map((todo, i) => ({
-            key: i.toString(),
-            height: _listItemHeight,
-            template: 'todo',
-            todo,
-        }));
+            partialState.todos = this.props.options.map((todo, i) => ({
+                key: i.toString(),
+                height: _listItemHeight,
+                template: 'todo',
+                todo,
+            }));
 
+        } else {
+            partialState.todos = [].map((todo, i) => ({
+                key: i.toString(),
+                height: _listItemHeight,
+                template: 'todo',
+                todo,
+            }));
+        }
         if (initState) {
             partialState.searchString = '';
             partialState.filteredTodoList = partialState.todos;
@@ -104,12 +116,9 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
 
         return partialState;
     }
-
     render() {
         return (
             <RX.View useSafeInsets={true} style={_styles.container}>
-
-
                 <VirtualListView
                     itemList={this.state.filteredTodoList}
                     renderItem={this._renderItem}
@@ -119,6 +128,9 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
         );
     }
 
+    componentWillUnmount() {
+        TodosStore.resetOptions()
+    }
 
 
     private _filterTodoList(sortedTodos: TodoListItemInfo[], searchString: string): TodoListItemInfo[] {
@@ -134,16 +146,19 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
         const item = details.item;
         return (
             <TodoListItem2
+                isTiny={this.props.isTiny}
                 todo={item.todo}
                 height={_listItemHeight}
                 isSelected={false}
                 searchString={this.state.searchString}
-                onPress={this._onPressTodo}
+                onPress={this.props.voted ? () => null : this._onPressTodo}
             />
         );
     };
 
     private _onPressTodo = (todoId: string) => {
+
+        TodosStore.setOptionById(todoId)
         this.setState({
             searchString: '',
             filteredTodoList: this.state.todos,

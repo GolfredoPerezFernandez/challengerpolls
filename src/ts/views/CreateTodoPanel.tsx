@@ -7,13 +7,12 @@
 
 import * as RX from 'reactxp';
 
-import NavContextStore from '../stores/NavContextStore';
-import { Colors, Fonts, FontSizes, Styles } from '../app/Styles';
-import TodosStore from '../stores/TodosStore';
+import { Colors, Fonts, FontSizes } from '../app/Styles';
 
 interface CreateTodoPanelProps extends RX.CommonProps {
-}
-interface CreateTodoPanelState extends RX.CommonProps {
+    isLogin: boolean;
+    isTiny: boolean;
+    pollOptions: Option[]
 }
 
 
@@ -84,7 +83,7 @@ const _styles = {
     buttonContainer2: RX.Styles.createViewStyle({
         margin: 2,
         width: 400,
-        height: 480,
+        height: 404,
         paddingHorizontal: 10,
         paddingVertical: 10,
         flexDirection: 'column',
@@ -124,126 +123,34 @@ interface CreateTodoPanelState {
     description: string;
     closeTime: number;
     duration: number;
+    time: any;
+    switch: boolean,
     winning: string;
     openPoll: boolean;
+    pollOptions: Option[];
     winner: string;
     totalVotes: number;
-    options: Options
+    option: string,
+    isLogin: boolean;
+    alert: string,
 }
-import Switch from "react-switch";
-import * as UI from '@sproutch/ui';
-import { Options } from '../models/TodoModels';
-import TodoListPanel2 from './TodoListPanel2';
+
+import { Option } from '../models/TodoModels';
+import { CreateTodoHook } from './CreateTodoHook';
 
 export default class CreateTodoPanel extends RX.Component<CreateTodoPanelProps, CreateTodoPanelState> {
+    protected _buildState(props: CreateTodoPanelProps, initState: boolean): Partial<CreateTodoPanelState> {
+        const newState: Partial<CreateTodoPanelState> = {
+
+        };
+
+        return newState;
+    }
     render() {
         return (
             <RX.View style={_styles.container}>
-
-                <UI.Paper elevation={10} style={{ root: { flexDirection: 'row', borderRadius: 12, backgroundColor: '#323238', width: 700, height: 500, } }} >
-
-                    <RX.View style={_styles.buttonContainer2}>
-
-                        <RX.Text style={_styles.todoTitle2}>
-                            {'Create new Poll'}
-                        </RX.Text>
-                        <RX.Text style={_styles.todoTitle}>
-                            {'Title'}
-                        </RX.Text>
-                        <RX.TextInput
-                            style={_styles.editTodoItem}
-                            value={this.state ? this.state.title : ''}
-                            placeholder={'Enter Title'}
-                            onChangeText={this._onChangeText}
-                            onSubmitEditing={this._onSubmitText}
-                            accessibilityId={'EditTodoPanelTextInput'}
-                        />
-
-                        <RX.Text style={_styles.todoTitle}>
-                            {'Description'}
-                        </RX.Text>
-                        <RX.TextInput
-                            style={_styles.editTodoItem}
-                            value={this.state ? this.state.title : ''}
-                            placeholder={'Enter Description'}
-                            onChangeText={this._onChangeText}
-                            onSubmitEditing={this._onSubmitText}
-                            accessibilityId={'EditTodoPanelTextInput'}
-                        />
-
-                        <RX.Text style={_styles.todoTitle}>
-                            {'Add Poll Option'}
-                        </RX.Text>
-                        <RX.View style={{ marginHorizontal: 10, marginVertical: 10, flexDirection: 'row', width: 380, height: 50, justifyContent: 'center', alignItems: 'center' }}>
-                            <RX.TextInput
-                                style={[_styles.editTodoItem, { marginHorizontal: 10, marginVertical: 10, }]}
-                                value={this.state ? this.state.title : ''}
-                                placeholder={'Enter a participant'}
-                                onChangeText={this._onChangeText}
-                                onSubmitEditing={this._onSubmitText}
-                                accessibilityId={'EditTodoPanelTextInput'}
-                            />
-                            <UI.Button onPress={this._onPressSave} style={{ root: [{ marginLeft: 10, marginRight: 35 }], content: [{ height: 37, backgroundColor: 'white', width: 60, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
-                            } elevation={4} variant={"outlined"} label="ADD" />
-
-                        </RX.View>
-
-                        <RX.Text style={_styles.todoTitle}>
-                            {'Timed Poll'}
-                        </RX.Text>
-
-                        <RX.View style={{ paddingHorizontal: 10, marginHorizontal: 10, flexDirection: 'row', width: 360, height: 55, justifyContent: 'center', alignItems: 'center' }}>
-                            <Switch onChange={() => null} checked={false} />
-
-                            <RX.TextInput
-                                style={[_styles.editTodoItem, { marginLeft: 20, width: 100 }]}
-                                value={this.state ? this.state.title : ''}
-                                placeholder={'Enter time in minutes'}
-                                onChangeText={this._onChangeText}
-                                onSubmitEditing={this._onSubmitText}
-                                accessibilityId={'EditTodoPanelTextInput'}
-                            />
-                        </RX.View>
-                        <RX.View style={_styles.buttonContainer}>
-
-                            <RX.Text style={[_styles.todoTitle, { alignSelf: 'center' }]}>
-                                {'Ready?'}
-                            </RX.Text>
-                            <UI.Button onPress={this._onPressSave} style={{ content: [{ height: 47, backgroundColor: 'white', width: 160, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
-                            } elevation={4} variant={"outlined"} label="Start" />
-
-                        </RX.View>
-
-                    </RX.View>
-                    <RX.View style={_styles.container2}>
-                        <TodoListPanel2 optionId={''} />
-                    </RX.View>
-                </UI.Paper>
-
+                <CreateTodoHook isTiny={this.props.isTiny} pollOptions={this.props.pollOptions} isLogin={this.props.isLogin} />
             </RX.View>
         );
-    }
-
-    private _onChangeText = (newText: string) => {
-        this.setState({ title: newText });
-    };
-
-    private _onSubmitText = () => {
-        this._saveTodo();
-    };
-
-    private _onPressSave = () => {
-        this._saveTodo();
-    };
-
-    private _saveTodo() {
-        if (!!this.state && this.state.title && this.state.description && this.state.closeTime
-            && this.state.duration && this.state.winning && this.state.openPoll
-            && this.state.winner && this.state.totalVotes && this.state.options) {
-
-
-            const newTodo = TodosStore.addTodo(this.state.title, this.state.description, this.state.closeTime, this.state.duration, this.state.winning, this.state.openPoll, this.state.winner, this.state.totalVotes, this.state.options);
-            NavContextStore.navigateToTodoList(NavContextStore.isUsingStackNav() ? undefined : newTodo.id);
-        }
     }
 }

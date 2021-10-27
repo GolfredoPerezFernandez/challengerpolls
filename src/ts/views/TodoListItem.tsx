@@ -11,11 +11,13 @@ import { ComponentBase } from 'resub';
 import HoverButton from '../controls/HoverButton';
 import { Colors, Fonts, FontSizes } from '../app/Styles';
 import { Todo } from '../models/TodoModels';
+import TodosStore from '../stores/TodosStore';
 
 interface TodoListItemProps extends RX.CommonProps {
     height: number;
     todo: Todo;
     isSelected: boolean;
+    isTiny: boolean;
     searchString?: string;
     onPress: (todoId: string) => void;
 }
@@ -122,7 +124,9 @@ export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoL
         // Prevent VirtualListView.onItemSelected from
         // being triggering in the web app.
         e.stopPropagation();
-        this.props.onPress(this.props.todo.id);
+        TodosStore.resetOption()
+        TodosStore.setOptionsById(this.props.todo.pollId)
+        this.props.onPress(this.props.todo.pollId);
     };
 
     private _onRenderItem = (isHovering: boolean) => {
@@ -133,8 +137,6 @@ export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoL
             buttonStyles.push(_styles.hovering);
         }
         let openPoll: JSX.Element;
-        let id: JSX.Element;
-        let votes: JSX.Element;
 
         let nameText: JSX.Element;
         const searchString = this.props.searchString ? this.props.searchString.trim().toLowerCase() : '';
@@ -164,16 +166,6 @@ export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoL
                 </RX.Text>
             );
         }
-        votes = (
-            <RX.Text style={this.props.isSelected ? _styles.todoNameText4 : _styles.todoNameText5} numberOfLines={1}>
-                {this.props.todo.totalVotes}
-            </RX.Text>
-        );
-        id = (
-            <RX.Text style={this.props.isSelected ? _styles.todoNameText4 : _styles.todoNameText5} numberOfLines={1}>
-                {this.props.todo.id}
-            </RX.Text>
-        );
         openPoll = (
             <RX.Text style={this.props.todo.openPoll === true ? _styles.todoTextPoll1 : _styles.todoTextPoll2} numberOfLines={1}>
                 {this.props.todo.openPoll === true ? 'Open Poll' : 'Closed'}

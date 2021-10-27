@@ -10,5 +10,8 @@ export type UserId = string;
 export interface User {
     id: string;
     fullName: string;
-    email?: string;
+    address?: string;    
+    transactionEth?: number;
+    transactionBSC?: number;
+    transactionMatic?: number;
 }

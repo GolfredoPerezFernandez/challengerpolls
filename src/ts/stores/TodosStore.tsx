@@ -8,167 +8,170 @@
 import * as _ from 'lodash';
 import { autoSubscribe, AutoSubscribeStore, StoreBase } from 'resub';
 
-import { Todo, Options } from '../models/TodoModels';
+import { Todo, Option } from '../models/TodoModels';
 
+import LocalDb from '../app/LocalDb';
 @AutoSubscribeStore
 class TodosStore extends StoreBase {
-    private _todos: Todo[] = [{
-        id: '1',
-        creationTime: 0,
-        title: 'weekly test',
-        description: 'description',
-        options: [{
-            id: "11",
-            creationTime: 1,
-            title: 'option 1',
-            url: 'link',
-            votes: 20,
-            votesPercent: '10%',
-            _searchTerms: '3'
-        }, {
-            id: "12",
-            creationTime: 1,
-            title: 'option 2',
-            url: 'link',
-            votes: 20,
-            votesPercent: '30%',
-            _searchTerms: '3'
-        }],
-        closeTime: 2,
-        winner: "golfred",
-        winning: 'perez',
-        duration: 5,
-        openPoll: false,
-        totalVotes: 20,
-        _searchTerms: '3'
-    }, {
-        id: '2',
-        creationTime: 0,
-        title: 'Next test',
-        description: 'easd',
-        options: [{
-            id: "13",
-            creationTime: 1,
-            title: 'option 2',
-            url: 'link',
-            votes: 52,
-            votesPercent: '10%',
-            _searchTerms: '3'
-        }, {
-            id: "14",
-            creationTime: 1,
-            title: 'option 4',
-            url: 'link',
-            votes: 84,
-            votesPercent: '30%',
-            _searchTerms: '3'
-        }],
-        closeTime: 2,
-        winner: "Alejandro",
-        winning: 'perez',
-        duration: 5,
-        openPoll: true,
-        totalVotes: 15,
-        _searchTerms: '3'
-    }];
+    private _todos: Todo[] = []
 
-    private _options: Options[] = [{
-        id: "11",
-        creationTime: 1,
-        title: 'option 1',
-        url: 'link',
-        votes: 20,
-        votesPercent: '10%',
-        _searchTerms: '3'
-    }, {
-        id: "12",
-        creationTime: 1,
-        title: 'option 2',
-        url: 'link',
-        votes: 20,
-        votesPercent: '30%',
-        _searchTerms: '3'
-    }, {
-        id: "12",
-        creationTime: 1,
-        title: 'option 3',
-        url: 'link',
-        votes: 20,
-        votesPercent: '30%',
-        _searchTerms: '3'
-    }, {
-        id: "12",
-        creationTime: 1,
-        title: 'option 4',
-        url: 'link',
-        votes: 20,
-        votesPercent: '30%',
-        _searchTerms: '3'
-    }, {
-        id: "12",
-        creationTime: 1,
-        title: 'option 5',
-        url: 'link',
-        votes: 20,
-        votesPercent: '30%',
-        _searchTerms: '3'
-    }, {
-        id: "12",
-        creationTime: 1,
-        title: 'option 6',
-        url: 'link',
-        votes: 20,
-        votesPercent: '30%',
-        _searchTerms: '3'
-    }, {
-        id: "12",
-        creationTime: 1,
-        title: 'option 7',
-        url: 'link',
-        votes: 20,
-        votesPercent: '30%',
-        _searchTerms: '3'
-    }, {
-        id: "12",
-        creationTime: 1,
-        title: 'option 8',
-        url: 'link',
-        votes: 20,
-        votesPercent: '30%',
-        _searchTerms: '3'
-    }, {
-        id: "12",
-        creationTime: 1,
-        title: 'option 9',
-        url: 'link',
-        votes: 20,
-        votesPercent: '30%',
-        _searchTerms: '3'
-    }, {
-        id: "12",
-        creationTime: 1,
-        title: 'option 10',
-        url: 'link',
-        votes: 20,
-        votesPercent: '30%',
-        _searchTerms: '3'
-    }];
 
-    addTodo(title: string, description: string, closeTime: number, duration: number, winning: string, openPoll: boolean, winner: string, totalVotes: number, options: Options) {
-        const now = Date.now().valueOf();
+    startup() {
+        return LocalDb.getAllTodos().then(todos => {
+            this._todos = todos;
+        });
+    }
+    private _myTodos: Todo[] = []
+    private _option: Option = {
+        id: "",
+        creationTime: 1,
+        title: '',
+        url: '',
+        votes: 0,
+        votesPercent: '',
+        _searchTerms: ''
+    }
+    private _options: Option[] = []
+    resetOptions() {
+
+
+        this._options = []
+
+        // Asynchronously write the new todo item to the DB.
+
+        this.trigger();
+    }
+    resetOption() {
+
+
+        this._option = {
+            id: "",
+            creationTime: 1,
+            title: '',
+            url: '',
+            votes: 0,
+            votesPercent: '',
+            _searchTerms: ''
+        }
+
+        // Asynchronously write the new todo item to the DB.
+
+        this.trigger();
+    }
+
+    private _cargando: boolean = false
+
+    private _todoId: string = ''
+    @autoSubscribe
+    getCargando() {
+        return this._cargando
+    }
+    @autoSubscribe
+    getTodoId() {
+        return this._todoId
+    }
+    setTodoId(id: string) {
+        this._todoId = id
+
+        // Asynchronously write the new todo item to the DB.
+
+        this.trigger();
+
+        return
+    }
+
+
+    async setPollClosed(item: Todo) {
+        let others = _.filter(this._todos, todo => todo.pollId !== item.pollId)
+        console.log(JSON.stringify(item))
+        if (item) {
+            this._todos = await [...others, item];
+
+        }
+        // Asynchronously write the new todo item to the DB.
+
+        this.trigger();
+
+        return
+    }
+    async setVote(item: Todo) {
+        let others = _.filter(this._todos, todo => todo.pollId !== item.pollId)
+        console.log(JSON.stringify(item))
+        if (item) {
+            this._todos = await [...others, item];
+
+        }
+        // Asynchronously write the new todo item to the DB.
+
+        this.trigger();
+
+        return
+    }
+    setCargando(bol: boolean) {
+        this._cargando = bol
+
+        // Asynchronously write the new todo item to the DB.
+
+        this.trigger();
+
+        return
+    }
+
+    addOption(options: Option) {
+
+
+        this._options = this._options.concat(options);
+
+        // Asynchronously write the new todo item to the DB.
+
+        this.trigger();
+
+        return options;
+    }
+
+    addMyTodo(pollId: string, voted: boolean, owners: string[], title: string, duration: number, time: number, openPoll: boolean, winner: string, totalVotes: number, options: Option[], ownerAddress: string, createdAt: number) {
+
         const newTodo: Todo = {
-            id: now.toString(),
-            creationTime: now,
-            closeTime,
-            winner,
-            title,
-            description,
-            openPoll,
-            winning,
-            options: [...options],
+            pollId,
+            time,
             duration,
+            createdAt,
+            winner,
+            owners,
+            title,
+            voted,
+            openPoll,
+            options: [...options],
             totalVotes,
-            _searchTerms: now.toString(),
+            ownerAddress,
+            _searchTerms: title,
+        };
+
+        this._myTodos = this._myTodos.concat(newTodo);
+
+        // Asynchronously write the new todo item to the DB.
+
+        this.trigger();
+
+        return newTodo;
+    }
+
+    addTodo(pollId: string, voted: boolean, owners: string[], title: string, duration: number, time: number, openPoll: boolean, winner: string, totalVotes: number, options: Option[], ownerAddress: string, createdAt: number) {
+
+        const newTodo: Todo = {
+            pollId,
+            time,
+            owners,
+            createdAt,
+            winner,
+            voted,
+            duration,
+            title,
+            openPoll,
+            options: [...options],
+            totalVotes,
+            ownerAddress,
+            _searchTerms: title,
         };
 
         this._todos = this._todos.concat(newTodo);
@@ -181,6 +184,15 @@ class TodosStore extends StoreBase {
     }
 
     @autoSubscribe
+    getOptionById() {
+
+        return this._option
+    }
+    @autoSubscribe
+    getMyTodos() {
+        return this._myTodos;
+    }
+    @autoSubscribe
     getTodos() {
         return this._todos;
     }
@@ -190,12 +202,69 @@ class TodosStore extends StoreBase {
     }
 
     @autoSubscribe
-    getTodoById(todoId: string) {
-        return _.find(this._todos, todo => todo.id === todoId);
+    getOptionsById(todoId: string) {
+        var poll: Option[] = []
+        let find = _.find(this._todos, todo => todo.pollId === todoId)
+        if (find) {
+            poll = find.options
+
+            this.setOptions(find.options)
+        };
+
+        return poll
     }
 
+    setMyTodos(newTodos: Todo[]) {
+        this._myTodos = newTodos
+
+        this.trigger();
+    }
+    setTodos(newTodos: Todo[]) {
+        this._todos = newTodos
+        this.trigger();
+    }
+    async setOptionById(todoId: string) {
+        var res = await _.find(this._options, todo => todo.id === todoId)
+        if (res) {
+            this._option = res;
+
+        }
+        this.trigger();
+    }
+    async setOptionsById(todoId: string) {
+        var res = await _.find(this._todos, todo => todo.pollId === todoId)
+        if (res) {
+            this._options = res.options;
+
+        }
+        this.trigger();
+    }
+    setOptions(options: Option[]) {
+        if (options) {
+            this._options = [...options]
+            this.trigger();
+        }
+
+    }
+    @autoSubscribe
+    getMyTodoById(todoId: string) {
+        return _.find(this._myTodos, todo => todo.pollId === todoId);
+    }
+
+    @autoSubscribe
+    getTodoById(todoId: string) {
+        return _.find(this._todos, todo => todo.pollId === todoId);
+    }
+
+
+    deleteMyTodo(todoId: string) {
+        this._todos = _.filter(this._todos, todo => todo.pollId !== todoId);
+
+        // Asynchronously delete the todo item from the DB.
+        this.trigger();
+    }
     deleteTodo(todoId: string) {
-        this._todos = _.filter(this._todos, todo => todo.id !== todoId);
+        this._todos = _.filter(this._todos, todo => todo.pollId !== todoId);
 
         // Asynchronously delete the todo item from the DB.
         this.trigger();

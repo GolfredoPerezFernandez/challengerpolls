@@ -20,18 +20,22 @@ import TodosStore from '../stores/TodosStore';
 import TodoListItem from './TodoListItem';
 
 import * as UI from '@sproutch/ui';
+import CurrentUserStore from '../stores/CurrentUserStore';
 interface TodoListItemInfo extends VirtualListViewItemInfo {
     todo: Todo;
 }
 
 export interface TodoListPanelProps extends RX.CommonProps {
     selectedTodoId?: string;
+    isTiny: boolean;
     onSelect: (selectedId: string) => void;
     onCreateNew: () => void;
 }
 
 interface TodoListPanelState {
     todos: TodoListItemInfo[];
+    cargando: boolean;
+    activeId: string;
     filteredTodoList: TodoListItemInfo[];
     searchString: string;
 }
@@ -86,6 +90,8 @@ const _styles = {
 export default class TodoListPanel extends ComponentBase<TodoListPanelProps, TodoListPanelState> {
     protected _buildState(props: TodoListPanelProps, initState: boolean): Partial<TodoListPanelState> | undefined {
         const partialState: Partial<TodoListPanelState> = {
+            activeId: CurrentUserStore.getActive(),
+            cargando: TodosStore.getCargando(),
         };
 
         partialState.todos = TodosStore.getTodos().map((todo, i) => ({
@@ -124,20 +130,34 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
                     />
                     <UI.Button
                         onPress={this._onPressCreateNewTodo} style={{ root: [{ marginLeft: 10 }], content: [{ width: 100, backgroundColor: 'white', marginBottom: 5, borderRadius: 11, }], label: _styles.label }
-                        } elevation={4} variant={"outlined"} label="+ Create" />
+                        } elevation={4} variant={"outlined"} label="+ New Poll" />
 
 
                 </RX.View>
+                {!this.state.cargando ?
 
-                <VirtualListView
-                    itemList={this.state.filteredTodoList}
-                    renderItem={this._renderItem}
-                    style={_styles.listScroll}
-                />
+                    <VirtualListView
+                        itemList={this.state.filteredTodoList}
+                        renderItem={this._renderItem}
+                        style={_styles.listScroll}
+                    /> :
+                    <RX.View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                        <UI.Spinner size={'large'} color={'white'} />
+
+                    </RX.View>
+                }
             </RX.View>
         );
     }
 
+    async goToAll() {
+
+        CurrentUserStore.setActive('all')
+    }
+    async goToMy() {
+
+        CurrentUserStore.setActive('my')
+    }
 
     private _onChangeTextSearch = (newValue: string) => {
         const filteredTodoList = this._filterTodoList(this.state.todos, newValue.trim());
@@ -160,9 +180,10 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
         const item = details.item;
         return (
             <TodoListItem
+                isTiny={this.props.isTiny}
                 todo={item.todo}
                 height={_listItemHeight}
-                isSelected={item.todo.id === this.props.selectedTodoId}
+                isSelected={item.todo.pollId === this.props.selectedTodoId}
                 searchString={this.state.searchString}
                 onPress={this._onPressTodo}
             />
@@ -177,7 +198,7 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
         });
     };
 
-    private _onPressCreateNewTodo = () => {
+    private _onPressCreateNewTodo = async () => {
         this.props.onCreateNew();
         this.setState({
             searchString: '',

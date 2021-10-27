@@ -23,6 +23,11 @@ const Indexes = {
     todoSearchTerms: 'todoItems_searchTerms_v1' as DBIndex<typeof Stores.todoItems, string>,
 };
 
+const Moralis = require('moralis');
+Moralis.initialize("kVVoRWButUY31vShqdGGQmiya4L0n3kF5aRTUVXk");
+
+Moralis.serverURL = 'https://qqdpez4ourk2.moralishost.com:2053/server'
+
 const _appSchema: DbSchema = {
     version: _appSchemaVersion,
     lastUsableVersion: _appSchemaVersion,
@@ -82,13 +87,19 @@ class LocalDb {
         return task.promise();
     }
 
+    getPolls = () => {
+        const ownedItems = Moralis.Cloud.run('getPolls')
+
+        return ownedItems;
+    }
     // Returns all todo items from the DB.
     getAllTodos(): SyncTasks.Promise<TodoModels.Todo[]> {
+       
         if (!this._db) {
             return SyncTasks.Rejected('Database not open');
         }
 
-        return this._db.openTransaction([Stores.todoItems], false).then(tx => tx.getStore(Stores.todoItems)).then(store => store.openPrimaryKey().getAll() as SyncTasks.Promise<TodoModels.Todo[]>).fail(this._handleDbFail);
+        return this.getPolls();
     }
 
     // Adds a new todo item to the DB.

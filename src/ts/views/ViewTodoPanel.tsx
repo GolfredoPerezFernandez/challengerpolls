@@ -9,15 +9,23 @@ import * as RX from 'reactxp';
 import { ComponentBase } from 'resub';
 
 import { Colors, Fonts, FontSizes } from '../app/Styles';
-import { Todo } from '../models/TodoModels';
+import { Todo, Option } from '../models/TodoModels';
+import CurrentUserStore from '../stores/CurrentUserStore';
 import TodosStore from '../stores/TodosStore';
 
 export interface ViewTodoPanelProps extends RX.CommonProps {
     todoId: string;
+    isTiny: boolean;
+    options: Option[]
 }
 
 interface ViewTodoPanelState {
     todo: Todo;
+    alert: string;
+    userAddress: string;
+    option: Option; cargando: boolean;
+    isLogin: boolean;
+    options: Option[]
 }
 
 const _styles = {
@@ -86,6 +94,12 @@ const _styles = {
         justifyContent: 'flex-start',
         alignItems: 'center',
     }),
+    todoTitle2: RX.Styles.createTextStyle({
+        margin: 2,
+        fontSize: FontSizes.size20,
+        color: Colors.white,
+        backgroundColor: 'transparent',
+    }),
     label: RX.Styles.createTextStyle({
         font: Fonts.displayBold,
         fontSize: FontSizes.size12,
@@ -98,69 +112,69 @@ const _styles = {
     })
 };
 
-import ImageSource from 'modules/images';
-import * as UI from '@sproutch/ui';
-import TodoListPanel2 from './TodoListPanel2';
+const Moralis = require('moralis');
+const serverUrl = "https://qqdpez4ourk2.moralishost.com:2053/server";
+const appId = "kVVoRWButUY31vShqdGGQmiya4L0n3kF5aRTUVXk";
+Moralis.start({ serverUrl, appId });
+
+
+
+
+import { ViewTodoHook } from './ViewTodoHook';
 export default class ViewTodoPanel extends ComponentBase<ViewTodoPanelProps, ViewTodoPanelState> {
     protected _buildState(props: ViewTodoPanelProps, initState: boolean): Partial<ViewTodoPanelState> {
+
         const newState: Partial<ViewTodoPanelState> = {
             todo: TodosStore.getTodoById(props.todoId),
-        };
+            isLogin: CurrentUserStore.getLogin(),
+            option: TodosStore.getOptionById(),
+            userAddress: CurrentUserStore.getUser()?.address,
+            alert: '',
+            cargando: false
 
+        };
         return newState;
     }
+    componentDidMount() {
 
+        var user = Moralis.User.current()
+        if (user !== null) {
+            let objectId = user.get('objectId')
+            let address = user.get('ethAddress')
+            CurrentUserStore.setUser(objectId, '', address, 0, 0, 0)
+            return
+        } else {
+            try {
+                Moralis.Web3.authenticate().then(async (user: any) => {
+
+                    let objectId = user.get('objectId')
+                    let address = user.get('ethAddress')
+                    CurrentUserStore.setUser(objectId, '', address, 0, 0, 0)
+
+                    return
+
+                })
+            } catch (error) {
+                if (error == "Error: User closed modal") {
+
+                    return
+                } else {
+
+
+                    return
+                }
+            }
+        }
+        return
+
+
+
+    }
     render() {
         return (
             <RX.View style={_styles.container}>
 
-                <UI.Paper elevation={10} style={{ root: { flexDirection: 'row', borderRadius: 12, backgroundColor: '#323238', width: 700, height: 500, } }} >
-
-                    <RX.View style={_styles.buttonContainer2}>
-
-                        <RX.Text style={_styles.todoTitle}>
-                            {this.state.todo ? this.state.todo.title : ''}
-                        </RX.Text>
-                        <RX.Text style={this.state.todo.openPoll === true ? _styles.todoTextPoll1 : _styles.todoTextPoll2}>
-                            {this.state.todo ? this.state.todo.openPoll === true ? 'OpenPoll' : 'Closed' : ''}
-                        </RX.Text>
-
-                        <RX.Text style={_styles.todoHeader}>
-                            {'Description:'}
-                        </RX.Text>
-                        <RX.Text style={_styles.todoText}>
-                            {this.state.todo ? this.state.todo.description : ''}
-                        </RX.Text>
-                        <RX.Text style={_styles.todoText}>
-                            {this.state.todo ? 'Time Left: ' + this.state.todo.closeTime + 'min' : ''}
-                        </RX.Text>
-                        <RX.Text style={_styles.todoText}>
-                            {this.state.todo ? 'Total Votes: ' + this.state.todo.totalVotes : ''}
-                        </RX.Text>
-
-                        <RX.Text style={_styles.todoHeader}>
-                            {this.state.todo ? 'Vote For ' : ''}
-                        </RX.Text>
-                        <RX.View style={_styles.buttonContainer}>
-
-                            <RX.View style={_styles.buttonContainer}>
-                                <UI.Button iconSlot={iconStyle => (
-                                    <RX.Image source={ImageSource.hand} style={{ marginTop: 0, alignSelf: 'center', marginRight: 5, width: 47, height: 47 }} />
-                                )} style={{ content: [{ height: 80, backgroundColor: 'white', width: 200, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
-                                } elevation={4} variant={"outlined"} label="+1 Vote" />
-
-                                <UI.Button style={{ content: [{ backgroundColor: 'red', height: 57, width: 100, marginBottom: 5, borderRadius: 11, }], label: _styles.label2 }
-                                } elevation={4} variant={"outlined"} label="Close Votation" />
-
-                            </RX.View>
-                        </RX.View>
-
-                    </RX.View>
-                    <RX.View style={_styles.container2}>
-                        <TodoListPanel2 optionId={this.props.todoId} />
-                    </RX.View>
-                </UI.Paper>
-
+                <ViewTodoHook userAddress={this.state.userAddress} isTiny={this.props.isTiny} todoId={this.props.todoId} option={this.state.option} isLogin={this.state.isLogin} options={this.props.options} todo={this.state.todo} />
             </RX.View>
         );
     }

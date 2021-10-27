@@ -13,17 +13,9 @@ import { ComponentBase } from 'resub';
 import HoverButton from '../controls/HoverButton';
 import NavContextStore from '../stores/NavContextStore';
 import { Colors, Fonts, FontSizes } from '../app/Styles';
-import VerticalSeparator from '../controls/VerticalSeparator';
 
-import AccountMenuButton from './AccountMenuButton';
 import CurrentUserStore from '../stores/CurrentUserStore';
-
-import * as UI from '@sproutch/ui';
-
-const Moralis = require('moralis');
-Moralis.initialize("kVVoRWButUY31vShqdGGQmiya4L0n3kF5aRTUVXk");
-
-Moralis.serverURL = 'https://qqdpez4ourk2.moralishost.com:2053/server'
+import { User } from '../models/IdentityModels';
 
 
 const _styles = {
@@ -41,6 +33,7 @@ const _styles = {
     barControlsContainer: RX.Styles.createViewStyle({
         flex: 1,
         alignItems: 'center',
+        paddingRight: 100,
         justifyContent: 'flex-end',
         flexDirection: 'row',
     }),
@@ -86,12 +79,14 @@ export interface TopBarCompositeProps extends RX.CommonProps {
 
 export interface TopBarCompositeState extends RX.CommonProps {
     isLogin: boolean;
+    user: User;
 }
 export default class TopBarComposite extends ComponentBase<TopBarCompositeProps, TopBarCompositeState> {
 
     protected _buildState(props: TopBarCompositeProps, initState: boolean): Partial<TopBarCompositeState> {
         const newState: Partial<TopBarCompositeState> = {
             isLogin: CurrentUserStore.getLogin(),
+            user: CurrentUserStore.getUser(),
         };
 
         return newState;
@@ -110,49 +105,31 @@ export default class TopBarComposite extends ComponentBase<TopBarCompositeProps,
                     <RX.View style={_styles.logoContainer}>
                         <RX.Image source={ImageSource.todoLogo} style={_styles.logoImage} />
                         <RX.Text style={_styles.logoText}>
-                            {'Challenger Polls'}
+                            {'CHALLENGER POLLS'}
                         </RX.Text>
                     </RX.View>
                 </RX.Button>
             );
         }
+        let leng: number = 0
+        if (this.state?.user?.address) {
+
+            leng = this.state?.user?.address?.length
+        }
         return (
             <RX.View style={_styles.background}>
-                {leftContents} {!this.state.isLogin ?
-                    <RX.View style={_styles.barControlsContainer}>
+                {leftContents}
 
-                        <UI.Button onPress={this._onPressTodo} iconSlot={iconStyle => (
-                            <RX.Image source={ImageSource.metamask} style={{ marginTop: 0, alignSelf: 'center', marginRight: 5, width: 16, height: 16 }} />
-                        )} style={{ content: [{ width: 200, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
-                        } elevation={4} variant={"outlined"} label="Log in with Metamask" />
-                    </RX.View> :
-
-                    <RX.View style={_styles.barControlsContainer}>
-
-                        <VerticalSeparator />
-                        <HoverButton onPress={this._onPressHelp} onRenderChild={this._onRenderHelpButton} />
-                        <VerticalSeparator />
-                        <AccountMenuButton />
-                    </RX.View>
-                }
+                <RX.View style={_styles.barControlsContainer}>
+                    {!this.state.isLogin ? null : this.state.user.address?.substring(0, 5).toUpperCase() ? '' :
+                        <RX.Text style={{ color: 'white' }}>
+                            {this.state ? this.state.user.address?.substring(0, 5).toUpperCase() + '...' + this.state.user.address?.substring(leng - 3, leng).toUpperCase() : ''}
+                        </RX.Text>
+                    }
+                </RX.View>
             </RX.View>
         );
     }
-    _onPressTodo = async (e: RX.Types.SyntheticEvent) => {
-        e.stopPropagation()
-
-        return await Moralis.Web3.authenticate().then(async (user: any) => {
-
-            let createdAt = user.get('createdAt')
-            let sessionToken = user.get('sessionToken')
-            let address = user.get('ethAddress')
-
-            console.log('createdAt ' + createdAt)
-            console.log('sessionToken ' + sessionToken)
-            console.log('address ' + address)
-        })
-    };
-
 
     private _onPressBack = (e: RX.Types.SyntheticEvent) => {
         e.stopPropagation();
@@ -176,22 +153,4 @@ export default class TopBarComposite extends ComponentBase<TopBarCompositeProps,
         NavContextStore.navigateToTodoList('', false);
     };
 
-    private _onPressHelp = (e: RX.Types.SyntheticEvent) => {
-        e.stopPropagation();
-
-        RX.Linking.openUrl('https://www.bing.com/search?q=help');
-    };
-
-    private _onRenderHelpButton = (isHovering: boolean) => {
-        const textStyles = [_styles.linkText];
-        if (isHovering) {
-            textStyles.push(_styles.linkTextHover);
-        }
-
-        return (
-            <RX.Text style={textStyles}>
-                {'Help'}
-            </RX.Text>
-        );
-    };
 }

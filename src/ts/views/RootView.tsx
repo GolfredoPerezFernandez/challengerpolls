@@ -17,6 +17,7 @@ import NavContextStore from '../stores/NavContextStore';
 import * as NavModels from '../models/NavModels';
 import { Colors } from '../app/Styles';
 
+import { Option } from '../models/TodoModels';
 import CreateTodoPanel from './CreateTodoPanel';
 import TodoCompositeView from './TodoCompositeView';
 import TodoListPanel from './TodoListPanel';
@@ -24,14 +25,23 @@ import TopBarComposite from './TopBarComposite';
 import TopBarStack from './TopBarStack';
 import ViewTodoPanel from './ViewTodoPanel';
 import ResponsiveWidthStore from '../stores/ResponsiveWidthStore';
-import HomePanel from './HomePanel';
+import { HomeHook } from './HomeHook';
+import CurrentUserStore from '../stores/CurrentUserStore';
+import TodosStore from '../stores/TodosStore';
 
 interface RootViewProps extends RX.CommonProps {
     onLayout?: (e: RX.Types.ViewOnLayoutEvent) => void;
 }
 
 interface RootViewState {
+    isLogin: boolean;
+    transactionEth: number;
+    transactionBsc: number;
+    cargando: boolean;
+    transactionMatic: number;
+    pollOptions: Option[];
     viewTitle: string;
+    isTiny: boolean;
     height: number;
     width: number;
     navContext: NavModels.RootNavContext;
@@ -59,8 +69,15 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
         const partialState: Partial<RootViewState> = {
             viewTitle: this._getViewTitle(newNavContext),
             navContext: newNavContext,
+            cargando: CurrentUserStore.getCargando(),
+            isLogin: CurrentUserStore.getLogin(),
+            transactionEth: CurrentUserStore.getEThTransaction(),
+            transactionBsc: CurrentUserStore.getBscTransaction(),
+            transactionMatic: CurrentUserStore.getMaticTransaction(),
             height: ResponsiveWidthStore.getHeight(),
-            width: ResponsiveWidthStore.getWidth()
+            width: ResponsiveWidthStore.getWidth(),
+            pollOptions: TodosStore.getOptions(),
+            isTiny: ResponsiveWidthStore.isSmallOrTinyScreenSize()
         };
 
         if (newNavContext.isStackNav) {
@@ -163,6 +180,8 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
         return (
             <RX.View style={_styles.stackViewBackground}>
                 <TopBarStack
+
+                    isTiny={this.state.isTiny}
                     title={this.state.viewTitle}
                     showBackButton={showBackButton}
                     onBack={this._onBack}
@@ -177,25 +196,26 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
             case NavModels.NavViewId.TodoList:
                 return (
                     <TodoListPanel
+                        isTiny={this.state.isTiny}
                         onSelect={this._onSelectTodoFromList}
                         onCreateNew={this._onCreateNewTodo}
                     />
                 );
 
             case NavModels.NavViewId.NewTodo:
-                return <CreateTodoPanel />;
+                return <CreateTodoPanel isTiny={this.state.isTiny} pollOptions={this.state.pollOptions} isLogin={this.state.isLogin} />;
             case NavModels.NavViewId.Home:
-                return <HomePanel />;
+                return <HomeHook isTiny={this.state.isTiny} cargando={this.state.cargando} isLogin={this.state ? this.state.isLogin : false} transactionEth={this.state ? this.state.transactionEth : 0} transactionBsc={this.state ? this.state.transactionBsc : 0} transactionMatic={this.state ? this.state.transactionMatic : 0} />;
 
             case NavModels.NavViewId.ViewTodo:
                 const viewContext = this._findNavContextForRoute(viewId) as NavModels.ViewTodoViewNavContext;
                 if (!viewContext) {
                     return null;
                 }
-                return <ViewTodoPanel todoId={viewContext.todoId} />;
+                return <ViewTodoPanel isTiny={this.state.isTiny} options={this.state.pollOptions} todoId={viewContext.todoId} />;
 
             default:
-                return <HomePanel />;;
+                return <HomeHook isTiny={this.state.isTiny} cargando={this.state.cargando} isLogin={this.state ? this.state.isLogin : false} transactionEth={this.state ? this.state.transactionEth : 0} transactionBsc={this.state ? this.state.transactionBsc : 0} transactionMatic={this.state ? this.state.transactionMatic : 0} />;;
         }
     }
 
@@ -203,7 +223,8 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
         NavContextStore.navigateToTodoList(selectedId, false);
     };
 
-    private _onCreateNewTodo = () => {
+    private _onCreateNewTodo = async () => {
+        await TodosStore.setOptions([])
         NavContextStore.navigateToTodoList(undefined, true);
     };
 
@@ -215,7 +236,7 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
 
     private _renderMainView(): JSX.Element | null {
         if (this.state.navContext instanceof NavModels.TodoRootNavContext) {
-            return <TodoCompositeView navContext={this.state.navContext} />;
+            return <TodoCompositeView isTiny={this.state.isTiny} navContext={this.state.navContext} />;
         } else {
             assert.fail('Unexpected main view type');
             return null;

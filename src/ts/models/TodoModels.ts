@@ -6,21 +6,22 @@
 */
 
 export interface Todo {
-    id: string;
-    creationTime: number;
-    closeTime: number;
-    duration: number;
+    pollId: string;
+    createdAt: number;
     title: string;
-    winning: string;
     winner: string;
+    voted:boolean;
     openPoll:boolean;
-    description: string;
+    duration: number,
     totalVotes: number;
-    options:Options[];
+    time:number;
+    options:Option[];
+    ownerAddress:string;
     _searchTerms: string;
+    owners:string[]
 }
 
-export interface Options {
+export interface Option {
     id: string;
     creationTime: number;
     title: string;
