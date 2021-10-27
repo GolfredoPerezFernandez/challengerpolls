@@ -15,8 +15,9 @@ import { Colors, Fonts, FontSizes, Styles } from '../app/Styles';
 const _styles = {
     background: RX.Styles.createViewStyle({
         alignSelf: 'stretch',
-        height: 36,
+        height: 50,
         borderBottomWidth: 1,
+        backgroundColor: 'transparent',
         borderColor: Colors.gray66,
         flexDirection: 'row',
         justifyContent: 'center',
@@ -24,7 +25,7 @@ const _styles = {
     leftRightContainer: RX.Styles.createViewStyle({
         flexDirection: 'row',
         alignItems: 'center',
-        width: 60,
+        width: 120,
     }),
     titleContainer: RX.Styles.createViewStyle({
         flex: 1,
@@ -35,13 +36,13 @@ const _styles = {
         flex: -1,
         font: Fonts.displaySemibold,
         fontSize: FontSizes.size16,
-        color: Colors.menuText,
+        color: Colors.menuText2,
         textAlign: 'center',
     }),
     backText: RX.Styles.createTextStyle({
         font: Fonts.displayRegular,
         fontSize: FontSizes.size16,
-        color: Colors.menuText,
+        color: Colors.menuText2,
         margin: 8,
     }),
     backTextHover: RX.Styles.createTextStyle({
@@ -94,7 +95,7 @@ export default class TopBarStack extends ComponentBase<TopBarStackProps, RX.Stat
 
     private _renderBackButton = (isHovering: boolean) => (
         <RX.Text style={[_styles.backText, isHovering ? _styles.backTextHover : undefined]}>
-            {'Back'}
+            {'Back to Polls'}
         </RX.Text>
     );
 }

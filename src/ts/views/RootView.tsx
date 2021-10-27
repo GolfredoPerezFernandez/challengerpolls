@@ -56,7 +56,7 @@ const _styles = {
     stackViewBackground: RX.Styles.createViewStyle({
         flex: 1,
         alignSelf: 'stretch',
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.contentBackground,
     }),
 };
 
@@ -114,10 +114,12 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
         if (this.state.navContext.isStackNav) {
             return (
                 <RX.View style={_styles.root} onLayout={this.props.onLayout}>
-                    <Navigator
-                        ref={this._onMountNavigator}
-                        renderScene={this._onRenderScene}
-                    />
+                    <RX.Image style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: this.state.width, height: this.state.height }} resizeMethod={'scale'} resizeMode={'cover'} source={ImageSource.colorsBack}>
+
+                        <Navigator
+                            ref={this._onMountNavigator}
+                            renderScene={this._onRenderScene}
+                        />  </RX.Image>
                 </RX.View>
             );
         } else {
@@ -146,15 +148,15 @@ export default class RootView extends ComponentBase<RootViewProps, RootViewState
 
             switch (topViewId) {
                 case NavModels.NavViewId.TodoList:
-                    return 'Todo List';
+                    return 'All Polls';
 
                 case NavModels.NavViewId.NewTodo:
-                    return 'New Todo';
+                    return 'New Poll';
 
                 case NavModels.NavViewId.ViewTodo:
-                    return 'Todo Details';
+                    return 'Poll';
                 case NavModels.NavViewId.Home:
-                    return 'Home';
+                    return 'Welcome';
                 default:
                     assert.fail('Unknown view');
                     return '';

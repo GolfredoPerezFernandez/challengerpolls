@@ -123,7 +123,7 @@ export default class TopBarComposite extends ComponentBase<TopBarCompositeProps,
                 <RX.View style={_styles.barControlsContainer}>
                     {!this.state.isLogin ? null : this.state.user.address?.substring(0, 5).toUpperCase() ? '' :
                         <RX.Text style={{ color: 'white' }}>
-                            {this.state ? this.state.user.address?.substring(0, 5).toUpperCase() + '...' + this.state.user.address?.substring(leng - 3, leng).toUpperCase() : ''}
+                            {this.state ? !this.state.user.address ? null : this.state.user.address?.substring(0, 5).toUpperCase() + '...' + this.state.user.address?.substring(leng - 3, leng).toUpperCase() : ''}
                         </RX.Text>
                     }
                 </RX.View>
@@ -142,7 +142,7 @@ export default class TopBarComposite extends ComponentBase<TopBarCompositeProps,
     private _renderBackButton = (isHovering: boolean) => (
         <RX.View style={_styles.backButtonContainer}>
             <RX.Text style={[_styles.backText, isHovering ? _styles.linkTextHover : undefined]}>
-                {'Back'}
+                {'To Polls'}
             </RX.Text>
         </RX.View>
     );

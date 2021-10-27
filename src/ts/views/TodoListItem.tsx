@@ -72,7 +72,7 @@ const _styles = {
     }),
     todoNameTextSelected: RX.Styles.createTextStyle({
         font: Fonts.displaySemibold,
-        color: Colors.menuTextSelected,
+        color: 'blue',
     }),
     todoImage: RX.Styles.createImageStyle({
         marginLeft: 16,

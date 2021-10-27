@@ -87,6 +87,6 @@ export class Fonts {
 // Styles
 export class Styles {
     static statusBarTopMargin = RX.Styles.createViewStyle({
-        marginTop: RX.StatusBar.isOverlay() ? 20 : 0,
+        marginTop: RX.StatusBar.isOverlay() ? 10 : 0,
     });
 }

@@ -24,6 +24,7 @@ interface TodoListItemInfo extends VirtualListViewItemInfo {
 export interface TodoListPanelProps extends RX.CommonProps {
     voted: boolean;
     isTiny: boolean;
+    selectedTodoId?: string;
     options: Option[]
 }
 
@@ -149,7 +150,8 @@ export default class TodoListPanel extends ComponentBase<TodoListPanelProps, Tod
                 isTiny={this.props.isTiny}
                 todo={item.todo}
                 height={_listItemHeight}
-                isSelected={false}
+                isSelected={item.todo.id === this.props.selectedTodoId}
+
                 searchString={this.state.searchString}
                 onPress={this.props.voted ? () => null : this._onPressTodo}
             />

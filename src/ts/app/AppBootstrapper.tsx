@@ -67,7 +67,7 @@ export default abstract class AppBootstrapper {
 
 
     onPollCreated = async (item: any) => {
-        console.log(JSON.stringify(item))
+        console.log("se crei ek oiikk" + JSON.stringify(item))
         await TodosStore.addTodo(item.attributes.pollId, item.attributes.voted, item.attributes.owners, item.attributes.title, item.attributes.duration, item.attributes.time, item.attributes.openPoll, item.attributes.winner, item.attributes.totalVotes, item.attributes.options, item.attributes.ownerAddress, item.attributes.createdAt);
 
 
@@ -77,7 +77,7 @@ export default abstract class AppBootstrapper {
 
 
 
-            NavContextStore.navigateToTodoList(NavContextStore.isUsingStackNav() ? undefined : item.attributes.pollId);
+            NavContextStore.navigateToTodoList(item.attributes.pollId);
 
             await TodosStore.setOptions(item.attributes.options)
 
@@ -87,7 +87,6 @@ export default abstract class AppBootstrapper {
     }
 
     onVoteCreated = async (item: any) => {
-        console.log('se creo un voto ' + JSON.stringify(item))
 
         let newItem: Todo = {
             pollId: item.attributes.pollId,
@@ -109,7 +108,6 @@ export default abstract class AppBootstrapper {
 
         } else {
             await TodosStore.setPollClosed(newItem)
-            console.log('se cerro')
         }
 
 
@@ -120,10 +118,7 @@ export default abstract class AppBootstrapper {
     private _startCriticalServices(): SyncTasks.Promise<void> {
         const servicesToStart: Service[] = [TodosStore];
 
-        let user = Moralis.User.current();
-        if (user) {
-            console.log('si entro')
-        }
+
         this.pollsSubscription()
         this.votesSubscription()
         CurrentUserStore.setLogin(true)

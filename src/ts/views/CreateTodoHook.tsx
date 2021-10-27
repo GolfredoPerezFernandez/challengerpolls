@@ -19,8 +19,26 @@ const _styles = {
     justifyContent: 'center',
     alignItems: 'center',
   }),
+  container3: RX.Styles.createViewStyle({
+    flex: 1,
+    width: 350,
+    alignSelf: 'center',
+    paddingHorizontal: 10,
+    height: 350,
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }),
+  todoTitle3: RX.Styles.createTextStyle({
+    margin: 2,
+    marginBottom: 2,
+    fontSize: FontSizes.size16,
+    color: Colors.white,
+    backgroundColor: 'transparent',
+  }),
   todoTitle2: RX.Styles.createTextStyle({
     margin: 2,
+    marginBottom: 2,
     fontSize: FontSizes.size20,
     color: Colors.white,
     backgroundColor: 'transparent',
@@ -29,6 +47,13 @@ const _styles = {
     margin: 2,
     alignSelf: 'stretch',
     fontSize: FontSizes.size14,
+    color: Colors.white,
+    backgroundColor: 'transparent',
+  }),
+  todoTitle4: RX.Styles.createTextStyle({
+    margin: 2,
+    alignSelf: 'stretch',
+    fontSize: FontSizes.size12,
     color: Colors.white,
     backgroundColor: 'transparent',
   }),
@@ -79,6 +104,16 @@ const _styles = {
     justifyContent: 'flex-start',
     alignItems: 'center',
   }),
+  buttonContainer3: RX.Styles.createViewStyle({
+    margin: 2,
+    width: 360,
+    height: 280,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }),
   editTodoItem: RX.Styles.createTextInputStyle({
     margin: 0,
     marginHorizontal: 8,
@@ -94,11 +129,11 @@ const _styles = {
     fontSize: FontSizes.size16,
     alignSelf: 'stretch',
   }),
-  editTodoItem2: RX.Styles.createTextInputStyle({
+  editTodoItem3: RX.Styles.createTextInputStyle({
     margin: 4,
     marginHorizontal: 8,
     height: 37,
-    width: 250,
+    width: 240,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: 'white',
@@ -106,6 +141,20 @@ const _styles = {
     opacity: 0.5,
     backgroundColor: '#323238',
     paddingHorizontal: 4,
+    fontSize: FontSizes.size16,
+    alignSelf: 'stretch',
+  }),
+  editTodoItem2: RX.Styles.createTextInputStyle({
+    marginVertical: 4,
+    marginRight: 4,
+    height: 37,
+    width: 230,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'white',
+    color: 'white',
+    opacity: 0.5,
+    backgroundColor: '#323238',
     fontSize: FontSizes.size16,
     alignSelf: 'stretch',
   }),
@@ -318,29 +367,34 @@ export const CreateTodoHook = ({
 
   return (<RX.View style={[_styles.container, Styles.statusBarTopMargin, {}]}>
 
-    <UI.Paper elevation={10} style={{ root: { flexDirection: isTiny ? 'column' : 'row', borderRadius: 12, backgroundColor: '#323238', width: 700, height: 500, } }} >
+    <UI.Paper elevation={10} style={{ root: { marginBottom: isTiny ? 50 : 0, flexDirection: isTiny ? 'column' : 'row', justifyContent: isTiny ? 'center' : 'center', borderRadius: 12, backgroundColor: '#323238', width: isTiny ? 370 : 700, height: isTiny ? 550 : 500, } }} >
 
-      <RX.View style={_styles.buttonContainer2}>
+      <RX.View style={isTiny ? _styles.buttonContainer3 : _styles.buttonContainer2}>
+        {isTiny ? <RX.View style={{ height: 30 }} />
 
-        <RX.Text style={[_styles.todoTitle2, { marginBottom: 5 }]}>
-          {'Create new Poll'}
-        </RX.Text>
+          :
+          <RX.Text style={[_styles.todoTitle2, { marginBottom: 5 }]}>
+            {'Create new Poll'}
+          </RX.Text>}
         <RX.Text style={_styles.todoTitle}>
           {'Title'}
         </RX.Text>
         <RX.TextInput
+          maxLength={80}
           style={_styles.editTodoItem}
           value={title}
           placeholder={'Enter Title'}
           onChangeText={setTitle}
           accessibilityId={'EditTodoPanelTextInput'}
         />
-        <RX.Text style={[_styles.todoTitle, { marginTop: 5 }]}>
+        <RX.Text style={[_styles.todoTitle, { marginTop: 10 }]}>
           {'Add Poll Option'}
         </RX.Text>
-        <RX.View style={{ marginHorizontal: 10, marginVertical: 10, flexDirection: 'row', width: 380, height: 50, justifyContent: 'flex-start', alignItems: 'center' }}>
+        <RX.View style={{ marginHorizontal: isTiny ? 0 : 10, marginVertical: 10, flexDirection: 'row', width: isTiny ? 320 : 380, height: 50, justifyContent: 'flex-start', alignItems: 'center' }}>
           <RX.TextInput
-            style={[_styles.editTodoItem2, { marginHorizontal: 10, marginVertical: 10, }]}
+
+            maxLength={120}
+            style={[isTiny ? _styles.editTodoItem2 : _styles.editTodoItem3, { marginHorizontal: isTiny ? 0 : 10, marginVertical: 10, }]}
             value={opt1}
             placeholder={'Enter a participant'}
             onChangeText={setOption}
@@ -355,21 +409,21 @@ export const CreateTodoHook = ({
 
         <RX.View style={[_styles.buttonContainer]}>
 
-          <RX.Text style={[_styles.todoTitle, { marginBottom: 10, marginTop: 0, alignSelf: 'flex-start' }]}>
+          <RX.Text style={[_styles.todoTitle, { marginBottom: 10, marginTop: 10, alignSelf: isTiny ? 'center' : 'flex-start' }]}>
             {'Ready?'}
           </RX.Text>
           {!cargando ?
-            <UI.Button onPress={_onPressCreate} style={{ root: { alignSelf: 'flex-start' }, content: [{ height: 47, backgroundColor: 'white', width: 160, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
+            <UI.Button onPress={_onPressCreate} style={{ root: { alignSelf: isTiny ? 'center' : 'flex-start' }, content: [{ height: 47, backgroundColor: 'white', width: 160, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
             } elevation={4} variant={"outlined"} label="Create" />
             : <UI.Spinner size={'medium'} style={{ marginBottom: 5, alignSelf: 'flex-start', }} color={'white'} />}
-          <RX.Text style={[_styles.todoTitle, { height: 67, alignSelf: 'center', color: 'yellow' }]}>
+          <RX.Text style={[isTiny ? _styles.todoTitle4 : _styles.todoTitle, { height: 67, alignSelf: 'center', color: 'yellow' }]}>
             {alert}
           </RX.Text>
         </RX.View>
 
       </RX.View>
-      <RX.View style={[_styles.container2, { borderWidth: 1, borderRadius: 12, borderColor: 'white' }]}>
-        <RX.Text style={_styles.todoTitle2}>
+      <RX.View style={[isTiny ? _styles.container3 : _styles.container2, { borderWidth: 1, borderRadius: 12, borderColor: 'white' }]}>
+        <RX.Text style={isTiny ? _styles.todoTitle3 : _styles.todoTitle2}>
           {'Options'}
         </RX.Text>
         <TodoListPanel2 voted={true} isTiny={isTiny} options={pollOptions} />

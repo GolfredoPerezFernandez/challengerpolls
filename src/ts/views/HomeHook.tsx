@@ -19,7 +19,17 @@ const _styles = {
     todoText: RX.Styles.createTextStyle({
         margin: 8,
         fontSize: FontSizes.size32,
-        alignSelf: 'stretch',
+        alignSelf: 'center',
+        textAlign: 'center',
+        color: Colors.white,
+        backgroundColor: 'transparent',
+    }),
+    todoText2: RX.Styles.createTextStyle({
+        margin: 8,
+        fontSize: FontSizes.size16,
+        alignSelf: 'center',
+        marginBottom: 20,
+        textAlign: 'center',
         color: Colors.white,
         backgroundColor: 'transparent',
     }),
@@ -65,16 +75,16 @@ export const HomeHook = ({
 
     return (
         <RX.View useSafeInsets={true} style={[_styles.container, Styles.statusBarTopMargin]}>
-            <UI.Paper elevation={10} style={{ root: { justifyContent: 'center', alignItems: 'center', flexDirection: 'column', borderRadius: 12, backgroundColor: '#323238', width: 700, height: 500, } }} >
+            <UI.Paper elevation={10} style={{ root: { justifyContent: 'center', alignItems: 'center', flexDirection: 'column', borderRadius: 12, backgroundColor: '#323238', width: isTiny ? 370 : 700, height: isTiny ? 550 : 500, } }} >
 
                 <RX.Text style={_styles.todoText}>
                     {'Welcome to Challenger Polls'}
                 </RX.Text>
-                <RX.Text style={_styles.todoText}>
+                <RX.Text style={_styles.todoText2}>
                     {'created for Weekly Challenge'}
                 </RX.Text>
-                <UI.Button onPress={() => NavContextStore.navigateToTodoList('', true)} style={{ root: [{ marginLeft: 10 }], content: [{ width: 100, backgroundColor: 'white', marginBottom: 5, borderRadius: 11, }], label: _styles.label }
-                } elevation={4} variant={"outlined"} label="+ New Poll" />
+                <UI.Button onPress={() => NavContextStore.navigateToTodoList('', true)} style={{ root: [{ marginLeft: 10 }], content: [{ width: 200, backgroundColor: 'white', marginBottom: 5, borderRadius: 11, }], label: _styles.label }
+                } elevation={4} variant={"outlined"} label="+ Start Creating a New Poll" />
 
 
 
