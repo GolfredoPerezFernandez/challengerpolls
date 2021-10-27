@@ -227,7 +227,7 @@ export const ViewTodoHook = ({
 
   const _onPressCopy = async (e: RX.Types.SyntheticEvent) => {
     e.stopPropagation()
-    navigator.clipboard.writeText('http://localhost:5000/polls?selected=' + todo.pollId)
+    navigator.clipboard.writeText('https://challengerpolls.herokuapp.com/polls?selected=' + todo.pollId)
 
 
     return
@@ -279,10 +279,6 @@ export const ViewTodoHook = ({
           let id = user.get('objectId')
           CurrentUserStore.setUser(id, '', address, transactions1.total, transactions2.total, transactions3.total)
 
-          let resto = _.filter(options, todo => todo.id !== option.id)
-          let find = _.find(options, todo => todo.id === option.id)
-
-
 
           const result: any = await Moralis.Cloud.run('getPollById', { pollId: todo.pollId })
           if (result.openPoll === false) {
@@ -306,25 +302,26 @@ export const ViewTodoHook = ({
               }
             }
             if (checkcount == 0) {
-              var newOptions: Option[] = [];
+              let resto = _.filter(options, todo => todo.id !== option.id)
+              let find = _.find(options, todo => todo.id === option.id)
+
+
               if (find && resto) {
-                let copy = find
-                copy.votes = find.votes + 1
 
+                const final: Todo = await Moralis.Cloud.run('setPollOwner', { pollId: todo.pollId, address, option: option.id })
+                if (final) {
 
-                newOptions = [...resto, copy]
+                  setCargando(false)
+                  setLock(true)
+                  return
+                }
               } else {
-                return
-              }
-              setVoteFor(option.title)
-              const final: Todo = await Moralis.Cloud.run('setPollOwner', { pollId: todo.pollId, address, newOptions })
-
-              if (final) {
-
                 setCargando(false)
                 setLock(true)
                 return
               }
+              setVoteFor(option.title)
+
             } else {
               setCargando(false)
               setLock(true)

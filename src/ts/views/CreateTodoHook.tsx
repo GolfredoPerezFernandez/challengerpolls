@@ -45,6 +45,7 @@ const _styles = {
   }),
   todoTitle: RX.Styles.createTextStyle({
     margin: 2,
+    height: 20,
     alignSelf: 'stretch',
     fontSize: FontSizes.size14,
     color: Colors.white,
@@ -396,26 +397,28 @@ export const CreateTodoHook = ({
           onChangeText={setTitle}
           accessibilityId={'EditTodoPanelTextInput'}
         />
-        <RX.Text style={[_styles.todoTitle, { marginTop: 10 }]}>
-          {'Add Poll Option'}
-        </RX.Text>
-        <RX.View style={{ marginHorizontal: isTiny ? 0 : 10, marginVertical: 10, flexDirection: 'row', width: isTiny ? 320 : 380, height: 50, justifyContent: 'flex-start', alignItems: 'center' }}>
-          <RX.TextInput
+        <RX.View style={{ height: 80, width: isTiny ? 320 : 380, justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+          <RX.Text style={[_styles.todoTitle, { marginTop: 10 }]}>
+            {'Add Poll Option'}
+          </RX.Text>
+          <RX.View style={{ marginHorizontal: isTiny ? 0 : 10, marginVertical: 10, flexDirection: 'row', width: isTiny ? 320 : 380, height: 50, justifyContent: 'flex-start', alignItems: 'center' }}>
+            <RX.TextInput
 
-            maxLength={120}
-            style={[isTiny ? _styles.editTodoItem2 : _styles.editTodoItem3, { marginHorizontal: isTiny ? 0 : 10, marginVertical: 10, }]}
-            value={opt1}
-            placeholder={'Enter a participant'}
-            onChangeText={setOption}
-            accessibilityId={'EditTodoPanelTextInput'}
-          />  {!cargando ?
-            <UI.Button onPress={(e) => _onPressSave2(e)} style={{ root: [{ marginLeft: 10, marginRight: 35 }], content: [{ height: 37, backgroundColor: 'white', width: 60, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
-            } elevation={4} variant={"outlined"} label="ADD" />
-            : null
+              maxLength={120}
+              style={[isTiny ? _styles.editTodoItem2 : _styles.editTodoItem3, { marginHorizontal: isTiny ? 0 : 10, marginVertical: 10, }]}
+              value={opt1}
+              placeholder={'Enter a participant'}
+              onChangeText={setOption}
+              accessibilityId={'EditTodoPanelTextInput'}
+            />  {!cargando ?
+              <UI.Button onPress={(e) => _onPressSave2(e)} style={{ root: [{ marginLeft: 10, marginRight: 35 }], content: [{ height: 37, backgroundColor: 'white', width: 60, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
+              } elevation={4} variant={"outlined"} label="ADD" />
+              : null
 
-          }
+            }
+          </RX.View>
+
         </RX.View>
-
         <RX.View style={[_styles.buttonContainer]}>
 
           <RX.Text style={[_styles.todoTitle, { marginBottom: 10, marginTop: 10, alignSelf: isTiny ? 'center' : 'flex-start' }]}>
