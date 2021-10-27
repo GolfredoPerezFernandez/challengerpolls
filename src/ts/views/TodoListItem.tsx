@@ -143,7 +143,6 @@ export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoL
 
             let encontrar = await _.find(todo?.owners, todo => todo === address)
 
-            console.log('encontrar ' + encontrar)
             if (encontrar) {
                 await CurrentUserStore.setVoted(true)
             } else {
@@ -161,7 +160,6 @@ export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoL
                     CurrentUserStore.setUser(objectId, '', address, 0, 0, 0)
                     let encontrar = _.find(todo?.owners, todo => todo === address)
 
-                    console.log('encontrar ' + encontrar)
                     if (encontrar) {
                         await CurrentUserStore.setVoted(true)
                     } else {

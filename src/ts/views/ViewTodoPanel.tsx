@@ -145,21 +145,18 @@ export default class ViewTodoPanel extends ComponentBase<ViewTodoPanelProps, Vie
     async componentDidMount() {
 
         var user = await Moralis.User.current()
-        console.log('owners ' + this.state.todo?.owners)
         if (user !== null) {
             let objectId = user.get('objectId')
             let address = user.get('ethAddress')
             CurrentUserStore.setUser(objectId, '', address, 0, 0, 0)
             let encontrar = await _.find(this.state.todo?.owners, todo => todo === address)
 
-            console.log('encontrar ' + encontrar)
             if (encontrar) {
                 await CurrentUserStore.setVoted(true)
             } else {
                 await CurrentUserStore.setVoted(false)
 
             }
-            console.log('voted ' + this.state.voted)
             return
         } else {
             try {
@@ -170,7 +167,6 @@ export default class ViewTodoPanel extends ComponentBase<ViewTodoPanelProps, Vie
                     CurrentUserStore.setUser(objectId, '', address, 0, 0, 0)
                     let encontrar = _.find(this.state.todo.owners, todo => todo === address)
 
-                    console.log('encontrar ' + encontrar)
                     if (encontrar) {
                         await CurrentUserStore.setVoted(true)
                     } else {
@@ -178,7 +174,6 @@ export default class ViewTodoPanel extends ComponentBase<ViewTodoPanelProps, Vie
                         await CurrentUserStore.setVoted(false)
 
                     }
-                    console.log('voted ' + this.state.voted)
                     return
 
                 })

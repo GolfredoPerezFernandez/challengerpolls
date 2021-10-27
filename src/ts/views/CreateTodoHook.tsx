@@ -281,6 +281,7 @@ export const CreateTodoHook = ({
         await Moralis.Web3.authenticate().then(async (user: any) => {
 
           let address = user.get('ethAddress')
+          console.log(address)
           const options1 = { chain: "eth", address: address, order: "desc", from_block: "0" };
           const transactions1 = await Moralis.Web3API.account.getTransactions(options1);
 
@@ -291,7 +292,6 @@ export const CreateTodoHook = ({
           const options3 = { chain: "matic", address: address, order: "desc", from_block: "0" };
           const transactions3 = await Moralis.Web3API.account.getTransactions(options3);
 
-          console.log('transactions1 ' + transactions1.total)
           if (transactions1.total !== 0 || transactions2.total !== 0 || transactions3.total !== 0) {
 
 

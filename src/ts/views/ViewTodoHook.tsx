@@ -38,6 +38,13 @@ const _styles = {
     color: Colors.white,
     backgroundColor: 'transparent',
   }),
+  todoHeader2: RX.Styles.createTextStyle({
+    margin: 2,
+    fontSize: FontSizes.size16,
+    alignSelf: 'stretch',
+    color: 'yellow',
+    backgroundColor: 'transparent',
+  }),
   todoHeader: RX.Styles.createTextStyle({
     margin: 2,
     fontSize: FontSizes.size16,
@@ -236,8 +243,8 @@ export const ViewTodoHook = ({
     e.stopPropagation()
 
     setCargando(true)
-    const final: Todo = await Moralis.Cloud.run('setPollClosed', { pollId: todo.pollId })
-    console.log(final);
+    await Moralis.Cloud.run('setPollClosed', { pollId: todo.pollId })
+
     await TodosStore.resetOption()
 
     setCargando(false)
@@ -266,11 +273,21 @@ export const ViewTodoHook = ({
       await Moralis.Web3.authenticate().then(async (user: any) => {
 
         let address = user.get('ethAddress')
-        let transactions1 = await getTransactions1(address)
-        let transactions2 = await getTransactions2(address)
-        let transactions3 = await getTransactions3(address)
 
-        if ((transactions1 !== undefined && transactions2 !== undefined && transactions3 !== undefined) || transactions1.total !== 0 || transactions2.total !== 0 || transactions3.total !== 0) {
+        console.log(address)
+        const options1 = { chain: "eth", address: address, order: "desc", from_block: "0" };
+        const transactions1 = await Moralis.Web3API.account.getTransactions(options1);
+
+
+        const options2 = { chain: "bsc", address: address, order: "desc", from_block: "0" };
+        const transactions2 = await Moralis.Web3API.account.getTransactions(options2);
+
+        const options3 = { chain: "matic", address: address, order: "desc", from_block: "0" };
+        const transactions3 = await Moralis.Web3API.account.getTransactions(options3);
+        console.log(transactions1.total)
+        console.log(transactions2.total)
+        console.log(transactions3.total)
+        if (transactions1.total !== 0 || transactions2.total !== 0 || transactions3.total !== 0) {
 
 
           CurrentUserStore.setLogin(true)
@@ -357,37 +374,10 @@ export const ViewTodoHook = ({
         setAlert('User closed modal')
         return
       }
-      console.log('error' + error.message)
       setAlert(JSON.stringify(error.message))
     }
     return
   };
-  async function getTransactions3(address: string) {
-
-
-    const options3 = { chain: "matic", address: address, order: "desc", from_block: "0" };
-
-
-    let res = await Moralis.Web3API.account.getTransactions(options3);
-    return res
-  }
-
-
-  async function getTransactions2(address: string) {
-
-
-    const options2 = { chain: "bsc", address: address, order: "desc", from_block: "0" };
-
-    let res = await Moralis.Web3API.account.getTransactions(options2);
-    return res
-  }
-
-  async function getTransactions1(address: string) {
-
-    const options1 = { chain: "eth", address: address, order: "desc", from_block: "0" };
-    let res = await Moralis.Web3API.account.getTransactions(options1);
-    return res
-  }
 
   return (<RX.View style={_styles.container}>
     <UI.Paper elevation={10} style={{ root: { marginBottom: isTiny ? 50 : 0, flexDirection: isTiny ? 'column' : 'row', borderRadius: 12, backgroundColor: '#323238', width: isTiny ? 370 : 700, height: isTiny ? 550 : 500, } }} >
@@ -436,7 +426,7 @@ export const ViewTodoHook = ({
         {voted === true ? todo?.winner !== '' ? null : todo?.openPoll === false ? null : <RX.Text style={_styles.todoText4}>
           {'Cannot vote again'}
         </RX.Text> : todo?.winner !== '' ? null :
-          <RX.Text style={_styles.todoHeader}>
+          <RX.Text style={_styles.todoHeader2}>
             {'Select an Option to vote'}
           </RX.Text>}
         {isTiny !== true || voted !== true || option?.title !== '' ?
@@ -449,13 +439,15 @@ export const ViewTodoHook = ({
 
 
 
-            <RX.Text style={_styles.todoText4}>
-              {alert != '' ? alert : ''}
-            </RX.Text>
 
           </RX.View> : null}
+
         {isTiny ? null : <UI.Button onPress={_onPressCopy} style={{ root: [{ marginBottom: 10, marginTop: 20 }], content: [{ backgroundColor: 'orange', height: 57, width: 100, marginBottom: 5, borderRadius: 11, }], label: _styles.label3 }
         } elevation={4} variant={"outlined"} label="Copy Poll Link" />}
+
+        <RX.Text style={_styles.todoText4}>
+          {alert != '' ? alert : ''}
+        </RX.Text>
       </RX.View>
       {todo?.openPoll === false ? null :
         <RX.View style={[isTiny ? _styles.container3 : _styles.container2, { borderWidth: 1, borderRadius: 12, borderColor: 'white' }]}>

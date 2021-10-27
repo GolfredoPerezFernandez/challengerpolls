@@ -83,7 +83,7 @@ class TodosStore extends StoreBase {
 
     async setPollClosed(item: Todo) {
         let others = _.filter(this._todos, todo => todo.pollId !== item.pollId)
-        console.log(JSON.stringify(item))
+
         if (item) {
             this._todos = await [...others, item];
 
@@ -96,7 +96,7 @@ class TodosStore extends StoreBase {
     }
     async setVote(item: Todo) {
         let others = _.filter(this._todos, todo => todo.pollId !== item.pollId)
-        console.log(JSON.stringify(item))
+
         if (item) {
             this._todos = await [...others, item];
 
