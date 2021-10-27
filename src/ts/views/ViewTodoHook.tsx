@@ -204,8 +204,10 @@ export const ViewTodoHook = ({
   option,
   todoId,
   isTiny,
+  voted,
 }: {
   todo: Todo;
+  voted: boolean;
   isLogin: boolean;
   options: Option[];
   isTiny: boolean;
@@ -218,10 +220,9 @@ export const ViewTodoHook = ({
     TodosStore.setOptionsById(todoId)
   }, [todo])
 
-
   const [alert, setAlert] = useState('')
   const [lock, setLock] = useState(false)
-  const [votefor, setVoteFor] = useState('')
+  const [, setVoteFor] = useState('')
   const [load, setCargando] = useState(false)
 
   const _onPressCopy = async (e: RX.Types.SyntheticEvent) => {
@@ -419,7 +420,7 @@ export const ViewTodoHook = ({
           } elevation={4} variant={"outlined"} label="Close Votation" />
             : null
           }
-          {!load ? lock ? todo?.openPoll !== true ? null : !isTiny ? null : <RX.Text style={_styles.todoTitleV}>
+          {!load ? lock ? todo?.openPoll !== true ? null : !isTiny ? null || todo?.openPoll : <RX.Text style={_styles.todoTitleV}>
             {'Vote Done!'}
           </RX.Text> : option?.title === '' || !isTiny ? null :
             <UI.Button onPress={_onPressVote} iconSlot={iconStyle => (
@@ -432,18 +433,18 @@ export const ViewTodoHook = ({
         </RX.View>
         {option?.title !== '' ?
           <RX.Text style={_styles.todoHeader}>
-            {todo || !lock ? 'Vote For ' + option?.title : ''}
-          </RX.Text> : todo?.voted === true ? todo?.winner !== '' ? null : todo?.openPoll === false ? null : <RX.Text style={_styles.todoText4}>
+            {todo || !lock ? todo?.openPoll == false ? null : 'Vote For ' + option?.title : ''}
+          </RX.Text> : voted === true ? todo?.winner !== '' ? null : todo?.openPoll === false ? null : <RX.Text style={_styles.todoText4}>
             {'Cannot vote again'}
           </RX.Text> : todo?.winner !== '' ? null :
             <RX.Text style={_styles.todoHeader}>
               {'Select an Option to vote'}
             </RX.Text>}
-        {option?.title !== '' || todo?.voted !== true ?
+        {option?.title !== '' || voted !== true ?
           <RX.View style={isTiny ? _styles.buttonContainer4 : _styles.buttonContainer}>
 
 
-            {!load ? lock ? <RX.Text style={_styles.todoTitle2}>
+            {!load ? lock ? todo?.openPoll !== true ? null : <RX.Text style={_styles.todoTitle2}>
               {'Vote Done!'}
             </RX.Text> : option?.title === '' || isTiny ? null :
               <UI.Button onPress={_onPressVote} iconSlot={iconStyle => (
@@ -467,7 +468,7 @@ export const ViewTodoHook = ({
           <RX.Text style={_styles.todoTitle2}>
             {'Select an Option'}
           </RX.Text>
-          <TodoListPanel2 selectedTodoId={option.id || ''} voted={todo?.voted} isTiny={isTiny} options={options} />
+          <TodoListPanel2 selectedTodoId={option.id || ''} voted={voted} isTiny={isTiny} options={options} />
 
         </RX.View>
 

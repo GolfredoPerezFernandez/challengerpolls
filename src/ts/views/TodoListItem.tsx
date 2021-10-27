@@ -12,6 +12,7 @@ import HoverButton from '../controls/HoverButton';
 import { Colors, Fonts, FontSizes } from '../app/Styles';
 import { Todo } from '../models/TodoModels';
 import TodosStore from '../stores/TodosStore';
+import CurrentUserStore from '../stores/CurrentUserStore';
 
 interface TodoListItemProps extends RX.CommonProps {
     height: number;
@@ -125,6 +126,7 @@ export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoL
         // being triggering in the web app.
         e.stopPropagation();
         TodosStore.resetOption()
+        CurrentUserStore.setVoted(false)
         TodosStore.setOptionsById(this.props.todo.pollId)
         this.props.onPress(this.props.todo.pollId);
     };

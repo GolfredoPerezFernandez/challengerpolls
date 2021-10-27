@@ -88,6 +88,8 @@ export default abstract class AppBootstrapper {
             duration: item.attributes.duration,
             owners: item.attributes.owners,
         }
+
+        await TodosStore.setOptions(newItem.options)
         if (item.openPoll == false) {
             await TodosStore.setVote(newItem)
 

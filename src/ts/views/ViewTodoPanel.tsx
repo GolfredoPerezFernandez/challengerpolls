@@ -5,6 +5,7 @@
 * The Todo item edit view.
 */
 
+import _ = require('lodash');
 import * as RX from 'reactxp';
 import { ComponentBase } from 'resub';
 
@@ -23,6 +24,7 @@ interface ViewTodoPanelState {
     todo: Todo;
     alert: string;
     userAddress: string;
+    voted: boolean;
     option: Option; cargando: boolean;
     isLogin: boolean;
     options: Option[]
@@ -130,19 +132,34 @@ export default class ViewTodoPanel extends ComponentBase<ViewTodoPanelProps, Vie
             option: TodosStore.getOptionById(),
             userAddress: CurrentUserStore.getUser()?.address,
             alert: '',
+            voted: CurrentUserStore.getVoted(),
             cargando: false
 
         };
         return newState;
     }
-    componentDidMount() {
+    async componentWillUnmount() {
 
-        var user = Moralis.User.logOut()
-        var user = Moralis.User.current()
+        await CurrentUserStore.setVoted(false)
+    }
+    async componentDidMount() {
+
+        var user = await Moralis.User.current()
+        console.log('owners ' + this.state.todo?.owners)
         if (user !== null) {
             let objectId = user.get('objectId')
             let address = user.get('ethAddress')
             CurrentUserStore.setUser(objectId, '', address, 0, 0, 0)
+            let encontrar = await _.find(this.state.todo?.owners, todo => todo === address)
+
+            console.log('encontrar ' + encontrar)
+            if (encontrar) {
+                await CurrentUserStore.setVoted(true)
+            } else {
+                await CurrentUserStore.setVoted(false)
+
+            }
+            console.log('voted ' + this.state.voted)
             return
         } else {
             try {
@@ -151,7 +168,17 @@ export default class ViewTodoPanel extends ComponentBase<ViewTodoPanelProps, Vie
                     let objectId = user.get('objectId')
                     let address = user.get('ethAddress')
                     CurrentUserStore.setUser(objectId, '', address, 0, 0, 0)
+                    let encontrar = _.find(this.state.todo.owners, todo => todo === address)
 
+                    console.log('encontrar ' + encontrar)
+                    if (encontrar) {
+                        await CurrentUserStore.setVoted(true)
+                    } else {
+
+                        await CurrentUserStore.setVoted(false)
+
+                    }
+                    console.log('voted ' + this.state.voted)
                     return
 
                 })
@@ -175,7 +202,7 @@ export default class ViewTodoPanel extends ComponentBase<ViewTodoPanelProps, Vie
         return (
             <RX.View style={_styles.container}>
 
-                <ViewTodoHook userAddress={this.state.userAddress} isTiny={this.props.isTiny} todoId={this.props.todoId} option={this.state.option} isLogin={this.state.isLogin} options={this.props.options} todo={this.state.todo} />
+                <ViewTodoHook userAddress={this.state.userAddress} voted={this.state.voted} isTiny={this.props.isTiny} todoId={this.props.todoId} option={this.state.option} isLogin={this.state.isLogin} options={this.props.options} todo={this.state.todo} />
             </RX.View>
         );
     }

@@ -33,6 +33,15 @@ export class CurrentUserStore extends StoreBase {
         this.activeId = password
         this.trigger()
     }
+    private _voted: boolean = false
+    @autoSubscribe
+    getVoted(): boolean {
+        return this._voted;
+    }
+    setVoted(logIn: boolean) {
+        this._voted=logIn
+        this.trigger();
+    }
     private _error: boolean = false
     @autoSubscribe
     getLogin(): boolean {
