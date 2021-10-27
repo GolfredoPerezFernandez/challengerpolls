@@ -13,6 +13,7 @@ import { Colors, Fonts, FontSizes } from '../app/Styles';
 import { Todo } from '../models/TodoModels';
 import TodosStore from '../stores/TodosStore';
 import CurrentUserStore from '../stores/CurrentUserStore';
+import _ = require('lodash');
 
 interface TodoListItemProps extends RX.CommonProps {
     height: number;
@@ -103,6 +104,12 @@ const _styles = {
     }),
 };
 
+const Moralis = require('moralis');
+const serverUrl = "https://qqdpez4ourk2.moralishost.com:2053/server";
+const appId = "kVVoRWButUY31vShqdGGQmiya4L0n3kF5aRTUVXk";
+Moralis.start({ serverUrl, appId });
+
+
 export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoListItemState> {
     protected _buildState(props: TodoListItemProps, initState: boolean): Partial<TodoListItemState> | undefined {
         const partialState: Partial<TodoListItemState> = {
@@ -121,14 +128,61 @@ export default class TodoListItem extends ComponentBase<TodoListItemProps, TodoL
         );
     }
 
-    private _onPress = (e: RX.Types.SyntheticEvent) => {
+    private _onPress = async (e: RX.Types.SyntheticEvent) => {
         // Prevent VirtualListView.onItemSelected from
         // being triggering in the web app.
         e.stopPropagation();
         TodosStore.resetOption()
-        CurrentUserStore.setVoted(false)
-        TodosStore.setOptionsById(this.props.todo.pollId)
-        this.props.onPress(this.props.todo.pollId);
+        let todo = TodosStore.getTodoById(this.props.todo.pollId);
+
+        var user = await Moralis.User.current()
+        if (user !== null) {
+            let objectId = user.get('objectId')
+            let address = user.get('ethAddress')
+            CurrentUserStore.setUser(objectId, '', address, 0, 0, 0)
+
+            let encontrar = await _.find(todo?.owners, todo => todo === address)
+
+            console.log('encontrar ' + encontrar)
+            if (encontrar) {
+                await CurrentUserStore.setVoted(true)
+            } else {
+                await CurrentUserStore.setVoted(false)
+
+            }
+            TodosStore.setOptionsById(this.props.todo.pollId)
+            this.props.onPress(this.props.todo.pollId);
+        } else {
+            try {
+                Moralis.Web3.authenticate().then(async (user: any) => {
+
+                    let objectId = user.get('objectId')
+                    let address = user.get('ethAddress')
+                    CurrentUserStore.setUser(objectId, '', address, 0, 0, 0)
+                    let encontrar = _.find(todo?.owners, todo => todo === address)
+
+                    console.log('encontrar ' + encontrar)
+                    if (encontrar) {
+                        await CurrentUserStore.setVoted(true)
+                    } else {
+
+                        await CurrentUserStore.setVoted(false)
+
+                    }
+                    return
+
+                })
+            } catch (error) {
+                if (error == "Error: User closed modal") {
+
+                    return
+                } else {
+
+
+                    return
+                }
+            }
+        }
     };
 
     private _onRenderItem = (isHovering: boolean) => {

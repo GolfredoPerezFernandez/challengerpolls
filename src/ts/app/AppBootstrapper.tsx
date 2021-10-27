@@ -88,8 +88,12 @@ export default abstract class AppBootstrapper {
             duration: item.attributes.duration,
             owners: item.attributes.owners,
         }
-
+        let user = Moralis.User.current()
+        let add = user.get('ethAddress')
         await TodosStore.setOptions(newItem.options)
+        if (add === newItem.ownerAddress) {
+
+        }
         if (item.openPoll == false) {
             await TodosStore.setVote(newItem)
 

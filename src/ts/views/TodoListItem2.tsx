@@ -99,7 +99,7 @@ export default class TodoListItem2 extends ComponentBase<TodoListItemProps, Todo
         // Prevent VirtualListView.onItemSelected from
         // being triggering in the web app.
         e.stopPropagation();
-        await TodosStore.resetOption()
+        await TodosStore.setOptionById(this.props.todo.id)
         this.props.onPress(this.props.todo.id);
     };
 

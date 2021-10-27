@@ -311,6 +311,7 @@ export const ViewTodoHook = ({
                 const final: Todo = await Moralis.Cloud.run('setPollOwner', { pollId: todo.pollId, address, option: option.id })
                 if (final) {
 
+                  await CurrentUserStore.setVoted(true)
                   setCargando(false)
                   setLock(true)
                   return
@@ -430,24 +431,20 @@ export const ViewTodoHook = ({
         </RX.View>
         {option?.title !== '' ?
           <RX.Text style={_styles.todoHeader}>
-            {todo || !lock ? todo?.openPoll == false ? null : 'Vote For ' + option?.title : ''}
-          </RX.Text> : voted === true ? todo?.winner !== '' ? null : todo?.openPoll === false ? null : <RX.Text style={_styles.todoText4}>
-            {'Cannot vote again'}
-          </RX.Text> : todo?.winner !== '' ? null :
-            <RX.Text style={_styles.todoHeader}>
-              {'Select an Option to vote'}
-            </RX.Text>}
-        {option?.title !== '' || voted !== true ?
+            {todo || !lock ? null : 'Vote For ' + option?.title}
+          </RX.Text> : ''}
+        {voted === true ? todo?.winner !== '' ? null : todo?.openPoll === false ? null : <RX.Text style={_styles.todoText4}>
+          {'Cannot vote again'}
+        </RX.Text> : todo?.winner !== '' ? null :
+          <RX.Text style={_styles.todoHeader}>
+            {'Select an Option to vote'}
+          </RX.Text>}
+        {isTiny !== true || voted !== true || option?.title !== '' ?
           <RX.View style={isTiny ? _styles.buttonContainer4 : _styles.buttonContainer}>
-
-
-            {!load ? lock ? todo?.openPoll !== true ? null : <RX.Text style={_styles.todoTitle2}>
-              {'Vote Done!'}
-            </RX.Text> : option?.title === '' || isTiny ? null :
-              <UI.Button onPress={_onPressVote} iconSlot={iconStyle => (
-                <RX.Image source={ImageSource.hand} style={{ marginTop: 0, alignSelf: 'center', marginRight: 5, width: 47, height: 47 }} />
-              )} style={{ content: [{ height: isTiny ? 50 : 80, backgroundColor: 'white', width: 200, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
-              } elevation={4} variant={"outlined"} label="+1 Vote" />
+            {!load ? (voted === true || option?.title === '') ? null : <UI.Button onPress={_onPressVote} iconSlot={iconStyle => (
+              <RX.Image source={ImageSource.hand} style={{ marginTop: 0, alignSelf: 'center', marginRight: 5, width: 47, height: 47 }} />
+            )} style={{ content: [{ height: isTiny ? 50 : 80, backgroundColor: 'white', width: 200, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
+            } elevation={4} variant={"outlined"} label="+1 Vote" />
               : <RX.View style={{ height: isTiny ? 50 : 80, }}> <UI.Spinner size={'medium'} style={{ height: isTiny ? 50 : 80, marginBottom: 5, alignSelf: 'flex-start', }} color={'white'} /></RX.View>}
 
 
