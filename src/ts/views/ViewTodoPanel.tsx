@@ -137,6 +137,7 @@ export default class ViewTodoPanel extends ComponentBase<ViewTodoPanelProps, Vie
     }
     componentDidMount() {
 
+        var user = Moralis.User.logOut()
         var user = Moralis.User.current()
         if (user !== null) {
             let objectId = user.get('objectId')

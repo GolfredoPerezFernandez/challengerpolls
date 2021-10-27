@@ -67,22 +67,7 @@ export default abstract class AppBootstrapper {
 
 
     onPollCreated = async (item: any) => {
-        console.log("se crei ek oiikk" + JSON.stringify(item))
         await TodosStore.addTodo(item.attributes.pollId, item.attributes.voted, item.attributes.owners, item.attributes.title, item.attributes.duration, item.attributes.time, item.attributes.openPoll, item.attributes.winner, item.attributes.totalVotes, item.attributes.options, item.attributes.ownerAddress, item.attributes.createdAt);
-
-
-        let user = await Moralis.User.current();
-        let add = await user.get('ethAddress')
-        if (user !== null || add === item.attributes.ownerAddress) {
-
-
-
-            NavContextStore.navigateToTodoList(item.attributes.pollId);
-
-            await TodosStore.setOptions(item.attributes.options)
-
-        }
-
 
     }
 

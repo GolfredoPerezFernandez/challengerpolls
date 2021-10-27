@@ -415,31 +415,31 @@ export const ViewTodoHook = ({
         <RX.Text style={_styles.todoText}>
         </RX.Text>
         <RX.View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-          {todo.ownerAddress === userAddress && todo.openPoll === true ? load ? null : <UI.Button onPress={_onPressClose} style={{ root: [{ marginBottom: 10, marginRight: isTiny ? 20 : 0, }], content: [{ backgroundColor: 'red', height: 57, width: 100, marginBottom: 5, borderRadius: 11, }], label: _styles.label2 }
+          {todo?.ownerAddress === userAddress && todo?.openPoll === true ? load ? null : <UI.Button onPress={_onPressClose} style={{ root: [{ marginBottom: 10, marginRight: isTiny ? 20 : 0, }], content: [{ backgroundColor: 'red', height: 57, width: 100, marginBottom: 5, borderRadius: 11, }], label: _styles.label2 }
           } elevation={4} variant={"outlined"} label="Close Votation" />
             : null
           }
-          {!load ? lock ? todo.openPoll !== true ? null : !isTiny ? null : <RX.Text style={_styles.todoTitleV}>
+          {!load ? lock ? todo?.openPoll !== true ? null : !isTiny ? null : <RX.Text style={_styles.todoTitleV}>
             {'Vote Done!'}
           </RX.Text> : option?.title === '' || !isTiny ? null :
             <UI.Button onPress={_onPressVote} iconSlot={iconStyle => (
               <RX.Image source={ImageSource.hand} style={{ marginTop: 0, alignSelf: 'center', marginRight: 5, width: 47, height: 47 }} />
             )} style={{ root: [{ marginLeft: 0 }], content: [{ height: isTiny ? 50 : 80, backgroundColor: 'white', width: 200, marginBottom: 5, borderRadius: 11, }], label: _styles.label }
             } elevation={4} variant={"outlined"} label="+1 Vote" />
-            : todo.ownerAddress !== userAddress ? null : <RX.View style={{ height: isTiny ? 50 : 80, }}><UI.Spinner size={'medium'} style={{ marginBottom: 5, alignSelf: 'flex-start', }} color={'white'} /></RX.View>}
+            : todo?.ownerAddress !== userAddress ? null : <RX.View style={{ height: isTiny ? 50 : 80, }}><UI.Spinner size={'medium'} style={{ marginBottom: 5, alignSelf: 'flex-start', }} color={'white'} /></RX.View>}
 
 
         </RX.View>
         {option?.title !== '' ?
           <RX.Text style={_styles.todoHeader}>
             {todo || !lock ? 'Vote For ' + option?.title : ''}
-          </RX.Text> : todo.voted === true ? todo.winner !== '' ? null : todo.openPoll === false ? null : <RX.Text style={_styles.todoText4}>
+          </RX.Text> : todo?.voted === true ? todo?.winner !== '' ? null : todo?.openPoll === false ? null : <RX.Text style={_styles.todoText4}>
             {'Cannot vote again'}
-          </RX.Text> : todo.winner !== '' ? null :
+          </RX.Text> : todo?.winner !== '' ? null :
             <RX.Text style={_styles.todoHeader}>
               {'Select an Option to vote'}
             </RX.Text>}
-        {option?.title !== '' || todo.voted !== true ?
+        {option?.title !== '' || todo?.voted !== true ?
           <RX.View style={isTiny ? _styles.buttonContainer4 : _styles.buttonContainer}>
 
 
@@ -462,12 +462,12 @@ export const ViewTodoHook = ({
         {isTiny ? null : <UI.Button onPress={_onPressCopy} style={{ root: [{ marginBottom: 10, marginTop: 20 }], content: [{ backgroundColor: 'orange', height: 57, width: 100, marginBottom: 5, borderRadius: 11, }], label: _styles.label3 }
         } elevation={4} variant={"outlined"} label="Copy Poll Link" />}
       </RX.View>
-      {todo.openPoll === false ? null :
+      {todo?.openPoll === false ? null :
         <RX.View style={[isTiny ? _styles.container3 : _styles.container2, { borderWidth: 1, borderRadius: 12, borderColor: 'white' }]}>
           <RX.Text style={_styles.todoTitle2}>
             {'Select an Option'}
           </RX.Text>
-          <TodoListPanel2 selectedTodoId={option.id || ''} voted={todo.voted} isTiny={isTiny} options={options} />
+          <TodoListPanel2 selectedTodoId={option.id || ''} voted={todo?.voted} isTiny={isTiny} options={options} />
 
         </RX.View>
 

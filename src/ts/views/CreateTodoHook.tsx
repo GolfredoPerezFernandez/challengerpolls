@@ -178,6 +178,7 @@ import _ = require('lodash');
 import TodoListPanel2 from './TodoListPanel2';
 import { Option } from '../models/TodoModels';
 import CurrentUserStore from '../stores/CurrentUserStore';
+import NavContextStore from '../stores/NavContextStore';
 
 const Moralis = require('moralis');
 const serverUrl = "https://qqdpez4ourk2.moralishost.com:2053/server";
@@ -335,6 +336,14 @@ export const CreateTodoHook = ({
             item.set("options", pollOptions)
 
             await item.save()
+
+
+
+            NavContextStore.navigateToTodoList(now2.toString());
+
+
+            await TodosStore.setOptions(pollOptions)
+
             setCargando(false)
             return
 
@@ -367,7 +376,7 @@ export const CreateTodoHook = ({
 
   return (<RX.View style={[_styles.container, Styles.statusBarTopMargin, {}]}>
 
-    <UI.Paper elevation={10} style={{ root: { marginBottom: isTiny ? 50 : 0, flexDirection: isTiny ? 'column' : 'row', justifyContent: isTiny ? 'center' : 'center', borderRadius: 12, backgroundColor: '#323238', width: isTiny ? 370 : 700, height: isTiny ? 550 : 500, } }} >
+    <UI.Paper elevation={10} style={{ root: { marginBottom: isTiny ? 50 : 0, flexDirection: isTiny ? 'column' : 'row', justifyContent: isTiny ? 'center' : 'center', borderRadius: 12, backgroundColor: '#323238', width: isTiny ? 370 : 700, height: isTiny ? 600 : 500, } }} >
 
       <RX.View style={isTiny ? _styles.buttonContainer3 : _styles.buttonContainer2}>
         {isTiny ? <RX.View style={{ height: 30 }} />
