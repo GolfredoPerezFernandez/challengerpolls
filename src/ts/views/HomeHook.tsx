@@ -83,6 +83,9 @@ export const HomeHook = ({
                 <RX.Text style={_styles.todoText2}>
                     {'created for Weekly Challenge'}
                 </RX.Text>
+                <RX.Text style={_styles.todoText2}>
+                    {'Must have at least one transaction on Ethereum, Binance Smart Chain or Polygon Network'}
+                </RX.Text>
                 <UI.Button onPress={() => NavContextStore.navigateToTodoList('', true)} style={{ root: [{ marginLeft: 10 }], content: [{ width: 200, backgroundColor: 'white', marginBottom: 5, borderRadius: 11, }], label: _styles.label }
                 } elevation={4} variant={"outlined"} label="+ Start Creating a New Poll" />
 
